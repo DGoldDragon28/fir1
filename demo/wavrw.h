@@ -2,6 +2,10 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct wav_hdr {
     char w_riff[4];
     uint32_t w_fsize;
@@ -31,4 +35,10 @@ int wav16_write_sample(wav_file_t*,int16_t*);
 
 #define WAV_NUM_CHANNELS(w) (w->hdr.w_nchannels)
 #define WAV_SAMPLE_RATE(w) (w->hdr.w_srate)
+
+#ifdef __cplusplus
+}
+#endif
+
+
 
