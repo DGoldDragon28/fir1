@@ -27,4 +27,19 @@ int wav16_write_sample(wav_file_t * wav, int16_t * sample) {
     return fwrite(&sample, wav->hdr.w_align, 1, wav->file) != 1;
 }
 
+void wav16_init_head(wav_file_t * wav, int nchannels, int srate) {
+    strncpy(wav->hdr.w_riff, "RIFF", 4);
+    wav->hdr.w_fsize = 44;
+    strncpy(wav->hdr.w_wave, "WAVE", 4);
+    strncpy(wav->hdr.w_fmt, "fmt ", 4);
+    wav->hdr.w_fmtsize = 16;
+    wav->hdr.w_type = 1;
+    wav->hdr.w_nchannels = nchannels;
+    wav->hdr.w_srate = srate;
+    wav->hdr.w_align = nchannels<<1;
+    wav->hdr.w_brate = srate * (nchannels<<1);
+    wav->hdr.w_bitdepth = 16;
+    strncpy(wav->hdr.w_dhead, "data", 4);
+    wav->hdr.w_dsize = 0;
+}
 

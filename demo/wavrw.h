@@ -32,6 +32,8 @@ int wav16_read_head(wav_file_t*);
 int wav16_read_sample(wav_file_t*,int16_t*);
 int wav16_write_head(wav_file_t*);
 int wav16_write_sample(wav_file_t*,int16_t*);
+void wav16_init_head(wav_file_t*,int,int);
+
 
 #define WAV_NUM_CHANNELS(w) (w->hdr.w_nchannels)
 #define WAV_SAMPLE_RATE(w) (w->hdr.w_srate)
