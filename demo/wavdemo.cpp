@@ -23,31 +23,38 @@ int main (int,char**)
 	Fir1 fir(NTAPS);
 	fir.setLearningRate(LEARNING_RATE);
 
-    FILE *finput = fopen("/home/ross/PycharmProjects/noise-guy/output/blues.00081-07042249.wav","rb");
+    FILE *finput = fopen("/home/ross/PycharmProjects/noise-guy/output/noisey/blues.00081-07042249.wav","rb");
     FILE *fnoise = fopen("/home/ross/PycharmProjects/noise-guy/noise-sources/fridge-hum/07042249.wav", "rb");
+    FILE *foutput = fopen("filtered.wav", "wb");
+
     wav_file wavFile;
     wavFile.file = finput;
     wav_file wavNoise;
     wavNoise.file = fnoise;
     wav16_read_head(&wavNoise);
     wav16_read_head(&wavFile);
+    int srate = wavFile.hdr.w_srate;
+    int nrchannels = wavFile.hdr.w_nchannels;
+    wav_file outputWav;
+    wav16_init_head(&outputWav,srate, nrchannels);
+    wav16_write_head(&outputWav);
     int channel = 0;
-	FILE *foutput = fopen("wav_filtered.wav","wb");
-	for(int i=0;;i++) 
+	for(int i=0;;i++)
 	{
         int buffer[2];
-        if(wav16_read_sample(&wavFile, buffer)) break;
+        if(wav16_read_sample(&wavFile, &buffer)) break;
         float first_channel = (float)buffer[channel];
 
-        if(wav16_read_sample(&wavNoise, buffer)) break;
+        if(wav16_read_sample(&wavNoise, &buffer)) break;
         float noise_sample = (float)buffer[channel];
 
 		double canceller = fir.filter(noise_sample);
 		double output_signal = first_channel - canceller;
 		fir.lms_update(output_signal);
-		fprintf(foutput,"%f %f %f\n",output_signal,canceller,noise_sample);
+        if(wav16_write_sample(&outputWav, output_signal)) break;
 	}
 	fclose(finput);
+    fclose(fnoise);
 	fclose(foutput);
-	fprintf(stderr,"Written the filtered ECG to 'ecg_filtered.dat'\n");
+	fprintf(stderr,"Written the filtered file\n");
 }
