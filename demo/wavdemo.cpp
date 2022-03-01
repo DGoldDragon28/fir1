@@ -41,17 +41,19 @@ int main (int,char**)
     int channel = 0;
 	for(int i=0;;i++)
 	{
-        int buffer[2];
+        int16_t buffer[2];
         if(wav16_read_sample(&wavFile, &buffer)) break;
         float first_channel = (float)buffer[channel];
 
         if(wav16_read_sample(&wavNoise, &buffer)) break;
         float noise_sample = (float)buffer[channel];
 
-		double canceller = fir.filter(noise_sample);
-		double output_signal = first_channel - canceller;
+		float canceller = fir.filter(noise_sample);
+		float output_signal = first_channel - canceller;
+
 		fir.lms_update(output_signal);
-        if(wav16_write_sample(&outputWav, output_signal)) break;
+        buffer[channel] = (int16_t)output_signal;
+        if(wav16_write_sample(&outputWav, buffer[channel])) break;
 	}
 	fclose(finput);
     fclose(fnoise);
