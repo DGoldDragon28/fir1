@@ -42,7 +42,7 @@ int main (int,char**)
     int nrchannels = wavFile.hdr.w_nchannels;
     wav_file outputWav;
     outputWav.file = foutput;
-    wav16_init_head(&outputWav,srate, nrchannels);
+    wav16_init_head(&outputWav,nrchannels, srate);
     wav16_write_head(&outputWav);
     int channel = 0;
 	for(int i=0;;i++)
