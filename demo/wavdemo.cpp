@@ -63,6 +63,6 @@ int main (int,char**)
 	}
 	fclose(finput);
     fclose(fnoise);
-	fclose(foutput);
+    (void)wav16_wr_close(&outputWav);
 	fprintf(stderr,"Written the filtered file\n");
 }

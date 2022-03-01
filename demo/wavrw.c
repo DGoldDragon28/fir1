@@ -24,6 +24,8 @@ int wav16_write_head(wav_file_t * wav) {
 }
 
 int wav16_write_sample(wav_file_t * wav, int16_t * sample) {
+    wav->hdr.w_fsize += wav->hdr.w_align;
+    wav->hdr.w_dsize += wav->hdr.w_align;
     return fwrite(&sample, wav->hdr.w_align, 1, wav->file) != 1;
 }
 
@@ -41,5 +43,12 @@ void wav16_init_head(wav_file_t * wav, int nchannels, int srate) {
     wav->hdr.w_bitdepth = 16;
     strncpy(wav->hdr.w_dhead, "data", 4);
     wav->hdr.w_dsize = 0;
+}
+
+int wav16_wr_close(wav_file_t * wav) {
+    fflush(wav->file);
+    fseek(wav->file, 0, SEEK_SET);
+    wav16_write_head(wav);
+    fclose(wav->file);
 }
 
