@@ -42,7 +42,7 @@ int main (int,char**)
     int nrchannels = wavFile.hdr.w_nchannels;
     wav_file outputWav;
     outputWav.file = foutput;
-    wav16_init_head(&outputWav,nrchannels, srate);
+    wav16_init_head(&outputWav, nrchannels, srate);
     wav16_write_head(&outputWav);
     int channel = 0;
 	for(int i=0;;i++)
@@ -50,15 +50,20 @@ int main (int,char**)
         int16_t buffer[2];
         if(wav16_read_sample(&wavFile, buffer)) break;
         float first_channel = (float)buffer[channel];
+        printf("%f \n", first_channel);
 
         if(wav16_read_sample(&wavNoise, buffer)) break;
-        float noise_sample = (float)buffer[channel];
 
-		float canceller = fir.filter(noise_sample);
+        float noise_sample = (float)buffer[channel];
+        printf("%f \n", noise_sample);
+
+
+        float canceller = fir.filter(noise_sample);
 		float output_signal = first_channel - canceller;
 
 		fir.lms_update(output_signal);
         buffer[channel] = (int16_t)output_signal;
+        printf("%d \n", buffer[channel]);
         if(wav16_write_sample(&outputWav, buffer)) break;
 	}
 	fclose(finput);
