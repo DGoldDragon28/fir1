@@ -27,6 +27,11 @@ int main (int,char**)
     FILE *fnoise = fopen("/home/ross/PycharmProjects/noise-guy/noise-sources/fridge-hum/07042249.wav", "rb");
     FILE *foutput = fopen("filtered.wav", "wb");
 
+    if(!finput || !fnoise || !foutput){
+        printf("error");
+    }
+
+
     wav_file wavFile;
     wavFile.file = finput;
     wav_file wavNoise;
