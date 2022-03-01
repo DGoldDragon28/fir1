@@ -23,12 +23,12 @@ int main (int,char**)
 	Fir1 fir(NTAPS);
 	fir.setLearningRate(LEARNING_RATE);
 
-    FILE *finput = fopen("/home/ross/PycharmProjects/noise-guy/output/noisey/blues.00081-07042249.wav","rb");
+    FILE *finput = fopen("/home/ross/PycharmProjects/noise-guy/output/noisy/blues.00081-07042249.wav","rb");
     FILE *fnoise = fopen("/home/ross/PycharmProjects/noise-guy/noise-sources/fridge-hum/07042249.wav", "rb");
     FILE *foutput = fopen("filtered.wav", "wb");
 
     if(!finput || !fnoise || !foutput){
-        printf("error");
+        printf("error \n" );
     }
 
 
