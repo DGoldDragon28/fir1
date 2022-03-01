@@ -25,6 +25,6 @@ add_executable (lmsdemo lmsdemo.cpp)
 target_link_libraries(lmsdemo fir_static)
 target_include_directories(lmsdemo PRIVATE ..)
 
-add_executable(wavdemo wavdemo.cpp)
+add_executable(wavdemo wavdemo.cpp wavrw.c)
 target_link_libraries(wavdemo fir_static)
 target_include_directories(wavdemo PRIVATE ..)
