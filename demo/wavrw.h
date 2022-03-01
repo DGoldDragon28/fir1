@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #ifdef __cplusplus
+#define _Static_assert static_assert
 extern "C" {
 #endif
 

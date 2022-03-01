@@ -42,10 +42,10 @@ int main (int,char**)
 	for(int i=0;;i++)
 	{
         int16_t buffer[2];
-        if(wav16_read_sample(&wavFile, &buffer)) break;
+        if(wav16_read_sample(&wavFile, buffer)) break;
         float first_channel = (float)buffer[channel];
 
-        if(wav16_read_sample(&wavNoise, &buffer)) break;
+        if(wav16_read_sample(&wavNoise, buffer)) break;
         float noise_sample = (float)buffer[channel];
 
 		float canceller = fir.filter(noise_sample);
@@ -53,7 +53,7 @@ int main (int,char**)
 
 		fir.lms_update(output_signal);
         buffer[channel] = (int16_t)output_signal;
-        if(wav16_write_sample(&outputWav, buffer[channel])) break;
+        if(wav16_write_sample(&outputWav, buffer)) break;
 	}
 	fclose(finput);
     fclose(fnoise);
