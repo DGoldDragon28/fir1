@@ -13,6 +13,7 @@
 #define _USE_MATH_DEFINES
 #include <stdio.h>
 #include <math.h>
+#include "../AudioFile/AudioFile.h"
 
 #define NTAPS 100
 #define LEARNING_RATE 0.0005
@@ -22,52 +23,28 @@ int main (int,char**)
 	// inits the filter
 	Fir1 fir(NTAPS);
 	fir.setLearningRate(LEARNING_RATE);
+    AudioFile<float> noiseyFile;
+    noiseyFile.load("/home/ross/PycharmProjects/noise-guy/output/noisy/blues.00081-07042249.wav");
+    int numSamples = noiseyFile.getNumSamplesPerChannel();
+    noiseyFile.printSummary();
+    AudioFile<float> noiseSource;
+    noiseSource.load("/home/ross/PycharmProjects/noise-guy/noise-sources/fridge-hum/07042249.wav");
+    noiseSource.printSummary();
+    AudioFile<float> output;
+    output.setAudioBufferSize (noiseyFile.getNumChannels(), numSamples);
 
-    FILE *finput = fopen("/home/ross/PycharmProjects/noise-guy/output/noisy/blues.00081-07042249.wav","rb");
-    FILE *fnoise = fopen("/home/ross/PycharmProjects/noise-guy/noise-sources/fridge-hum/07042249.wav", "rb");
-    FILE *foutput = fopen("filtered.wav", "wb");
-
-    if(!finput || !fnoise || !foutput){
-        printf("error \n" );
-    }
-
-
-    wav_file wavFile;
-    wavFile.file = finput;
-    wav_file wavNoise;
-    wavNoise.file = fnoise;
-    wav16_read_head(&wavNoise);
-    wav16_read_head(&wavFile);
-    int srate = wavFile.hdr.w_srate;
-    int nrchannels = wavFile.hdr.w_nchannels;
-    wav_file outputWav;
-    outputWav.file = foutput;
-    wav16_init_head(&outputWav, nrchannels, srate);
-    wav16_write_head(&outputWav);
     int channel = 0;
-	for(int i=0;;i++)
-	{
-        int16_t buffer[2];
-        if(wav16_read_sample(&wavFile, buffer)) break;
-        float first_channel = (float)buffer[channel];
-        printf("%f \n", first_channel);
-
-        if(wav16_read_sample(&wavNoise, buffer)) break;
-
-        float noise_sample = (float)buffer[channel];
-        printf("%f \n", noise_sample);
-
-
+	for(int i=0; i < numSamples;i++)
+    {
+        float noisey_sample = noiseyFile.samples[channel][i];
+        float noise_sample = noiseSource.samples[channel][i];
         float canceller = fir.filter(noise_sample);
-		float output_signal = first_channel - canceller;
+        //printf("sample: %f \n noise: %f \n canceller: %f\n", noisey_sample, noise_sample, canceller );
 
+        float output_signal = noisey_sample - canceller;
 		fir.lms_update(output_signal);
-        buffer[channel] = (int16_t)output_signal;
-        printf("%d \n", buffer[channel]);
-        if(wav16_write_sample(&outputWav, buffer)) break;
+        output.samples[channel][i] = output_signal;
 	}
-	fclose(finput);
-    fclose(fnoise);
-    (void)wav16_wr_close(&outputWav);
+    output.save("filtered.wav");
 	fprintf(stderr,"Written the filtered file\n");
 }
