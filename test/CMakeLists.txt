@@ -21,6 +21,9 @@ add_executable (fixed fixed.cpp)
 target_link_libraries(fixed fir_static)
 add_test(TestFixed fixed)
 
+add_executable(signalCleaner SignalCleaner.cpp)
+target_link_libraries(signalCleaner fir_static)
+
 add_executable (lms lms.cpp)
 target_link_libraries(lms fir_static)
 add_test(TestLms lms)
