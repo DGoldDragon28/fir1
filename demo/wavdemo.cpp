@@ -44,7 +44,8 @@ int main (int,char**)
         float output_signal = noisey_sample - canceller;
 		fir.lms_update(output_signal);
         output.samples[channel][i] = output_signal;
-	}
+
+    }
     output.save("filtered.wav");
 	fprintf(stderr,"Written the filtered file\n");
 }
