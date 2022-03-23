@@ -93,7 +93,7 @@ float SignalCleaner::CalcCovariance(AudioFile<float> x, AudioFile<float> y){
             covariance += (x.samples[channel_idx][sample_idx] - mean_x) * (y.samples[channel_idx][sample_idx] - mean_y);
         }
     }
-    return covariance / (float)(n_samples_per_channel * n_channels);
+    return covariance;// / (float)(n_samples_per_channel * n_channels);
 }
 
 float SignalCleaner::CalcStdDev(AudioFile<float> signal){
@@ -106,7 +106,7 @@ float SignalCleaner::CalcStdDev(AudioFile<float> signal){
             total += pow(diff, 2);
         }
     }
-    return sqrt(total/N);
+    return sqrt(total);///N);
 }
 
 float SignalCleaner::ComputeMean(AudioFile<float> signal){
@@ -127,6 +127,7 @@ void SignalCleaner::SetClean(std::string filename) {
     else{
         clean.load(filename);
     }
+    clean.printSummary();
 }
 
 
