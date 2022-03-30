@@ -1,4 +1,4 @@
-#include "correlate.h"
+#include "SignalCleaner.h"
 #include <cstdlib>
 
 #define PRINT_USAGE(n) (std::cerr << "Usage: " << n << "[-l <lrate>] [-n <ntaps>] [-o <file>] <noise-source> [<input>]" << std::endl)
@@ -31,7 +31,7 @@ int main(int argc, char ** argv) {
                 outpath = (argv[i][2] ? &argv[i][2] : argv[++i]);
                 has_outpath = true;
                 break;
-            else:
+            default:
                 PRINT_USAGE(argv[0]);
                 return EXIT_FAILURE;
         }
@@ -43,7 +43,7 @@ int main(int argc, char ** argv) {
 
     SignalCleaner cleaner(paths[1], paths[0], ntaps, lrate);
     cleaner.Filter();
-    signalCleaner.SaveFiltered(has_outpath ? outpath : "/dev/stdout");
+    cleaner.SaveFiltered(has_outpath ? outpath : "/dev/stdout");
 }
 
 
