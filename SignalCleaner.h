@@ -28,27 +28,12 @@ public:
 
     void PrintSummaries();
 
-    double CalcPearsonCorrelationCoeff(AudioFile<double> x, AudioFile<double> y);
-
     void SetClean(std::string filename);
-
-    double CalcCovariance(AudioFile<double> x, AudioFile<double> y);
-
-    double CalcStdDev(AudioFile<double> signal);
-
-    double ComputeMean(AudioFile<double> signal);
 
 private:
     Fir1 internal_fir;
 
-
     bool FileExists(std::string filename);
-
-    double ComputeRMS(AudioFile<double> signal);
-
-    double ComputeSNR(AudioFile<double> signal, AudioFile<double> noise);
-    double SNRFromPearson(double p, bool as_db);
-
 
 };
 
