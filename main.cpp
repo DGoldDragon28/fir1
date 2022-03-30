@@ -17,20 +17,20 @@ int main(int argc, char ** argv) {
             if(pathcnt > 1) { PRINT_USAGE(argv[0]); return EXIT_FAILURE; }
             paths[pathcnt++] = argv[i];
         } else switch(argv[i][1]) {
-	    case '\0':
+            case '\0':
                 if(pathcnt > 1) { PRINT_USAGE(argv[0]); return EXIT_FAILURE; }
                 paths[pathcnt++] = "/dev/stdin";
-		break;
-	    case 'l':
+                break;
+            case 'l':
                 lrate = std::stod(argv[i][2] ? &argv[i][2] : argv[++i]);
                 break;
             case 'n':
                 ntaps = std::stoi(argv[i][2] ? &argv[i][2] : argv[++i]);
                 break;
-	    case 'o':
+            case 'o':
                 outpath = (argv[i][2] ? &argv[i][2] : argv[++i]);
-		has_outpath = true;
-		break;
+                has_outpath = true;
+                break;
             else:
                 PRINT_USAGE(argv[0]);
                 return EXIT_FAILURE;
