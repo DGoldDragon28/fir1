@@ -11,32 +11,32 @@
 
 class SignalCleaner {
 public:
-    AudioFile<float> noisey_signal;
-    AudioFile<float> noise_source;
-    AudioFile<float> output;
-    AudioFile<float> clean;
+    AudioFile<double> noisey_signal;
+    AudioFile<double> noise_source;
+    AudioFile<double> output;
+    AudioFile<double> clean;
 
-    SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, float learning_rate);
+    SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, double learning_rate);
 
     bool SaveFiltered(std::string);
 
     void Filter();
 
-    float SNRPreFiltered(bool as_db);
+    double SNRPreFiltered(bool as_db);
 
-    float SNRPostFiltered(bool as_db);
+    double SNRPostFiltered(bool as_db);
 
     void PrintSummaries();
 
-    float CalcPearsonCorrelationCoeff(AudioFile<float> x, AudioFile<float> y);
+    double CalcPearsonCorrelationCoeff(AudioFile<double> x, AudioFile<double> y);
 
     void SetClean(std::string filename);
 
-    float CalcCovariance(AudioFile<float> x, AudioFile<float> y);
+    double CalcCovariance(AudioFile<double> x, AudioFile<double> y);
 
-    float CalcStdDev(AudioFile<float> signal);
+    double CalcStdDev(AudioFile<double> signal);
 
-    float ComputeMean(AudioFile<float> signal);
+    double ComputeMean(AudioFile<double> signal);
 
 private:
     Fir1 internal_fir;
@@ -44,10 +44,10 @@ private:
 
     bool FileExists(std::string filename);
 
-    float ComputeRMS(AudioFile<float> signal);
+    double ComputeRMS(AudioFile<double> signal);
 
-    float ComputeSNR(AudioFile<float> signal, AudioFile<float> noise);
-    float SNRFromPearson(float p, bool as_db);
+    double ComputeSNR(AudioFile<double> signal, AudioFile<double> noise);
+    double SNRFromPearson(double p, bool as_db);
 
 
 };

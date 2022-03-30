@@ -4,11 +4,11 @@
 #include "../SignalCleaner.h"
 
 int main (int,char**) {
-    SignalCleaner signalCleaner("/home/ross/PycharmProjects/noise-guy/output/noisy/blues.00081-07002027.wav",
-                                "/home/ross/PycharmProjects/noise-guy/noise-sources/strip-lighting-hum/07002027.wav",
-                                500, 0.0005);
+    SignalCleaner signalCleaner("/home/ross/PycharmProjects/noise-guy/output/noisy/disco.00060-sine50Hz30s.wav",//"/home/ross/PycharmProjects/noise-guy/output/noisy/blues.00081-07002027.wav",
+                                "/home/ross/PycharmProjects/noise-guy/noise-sources/50hz-sine/sine50Hz30s.wav",
+                                500, 0.0001);
     signalCleaner.PrintSummaries();
-    signalCleaner.SetClean("/home/ross/PycharmProjects/noise-guy/output/upsampled/blues.00081.wav");
+    signalCleaner.SetClean("/home/ross/PycharmProjects/noise-guy/output/upsampled/disco.00060.wav");
     std::cout << "clean mean: " << signalCleaner.ComputeMean(signalCleaner.clean) << "\n";
     std::cout << "std deviation clean signal: " << signalCleaner.CalcStdDev(signalCleaner.clean) << "\n";
     std::cout << "std deviation noisey signal: " << signalCleaner.CalcStdDev(signalCleaner.noisey_signal) << "\n";
