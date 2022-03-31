@@ -13,6 +13,8 @@ endif()
 include(GNUInstallDirs)
 add_subdirectory(demo)
 add_subdirectory(test)
+add_subdirectory(correlate)
+add_subdirectory(SignalCleaner)
 
 cmake_policy(SET CMP0048 NEW) # set VERSION in project()
 cmake_policy(SET CMP0042 NEW) # enable MACOSX_RPATH by default
@@ -28,21 +30,20 @@ endif()
 set(LIBSRC
         Fir1.cpp
         Fir1fixed.cpp
-        SignalCleaner.cpp
+        #SignalCleaner.cpp
         )
 
 set(LIBINCLUDE
         Fir1fixed.h
         Fir1.h
-        SignalCleaner.h
+        #SignalCleaner.h
         )
 
 
 if (UNIX)
     add_library(fir
             SHARED
-            ${LIBSRC}
-            test/SignalCleaner.cpp)
+            ${LIBSRC})
 
     set_target_properties(fir PROPERTIES
             SOVERSION 1
@@ -63,7 +64,6 @@ add_library(fir_static
         ${LIBSRC}
         )
 
-add_executable(lms-fir main.cpp SignalCleaner.cpp Fir1.cpp)
 
 set_target_properties(fir_static PROPERTIES
         VERSION ${PROJECT_VERSION}

@@ -20,6 +20,8 @@ Usage: wav-correlate <file1> [<file2>]
 
 ```
 
+If no secondary file is specified, the program will read from `stdin`.
+
 ## Output
 
 The program outputs metrics to `stdout`. Example program usage and output is shown:
