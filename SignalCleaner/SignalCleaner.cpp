@@ -36,21 +36,6 @@ void SignalCleaner::Filter() {
     }
 }
 
-void SignalCleaner::SetClean(std::string filename) {
-    if(!FileExists(filename)){
-        throw std::invalid_argument("Clean signal file does not exist.");
-    }
-    else{
-        clean.load(filename);
-    }
-//    for(int channel_idx = 0; channel_idx < clean.getNumChannels(); channel_idx++) {
-//        for (int sample_idx = 0; sample_idx < clean.getNumSamplesPerChannel(); sample_idx++) {
-//            clean.samples[channel_idx][sample_idx] = 0.5 * clean.samples[channel_idx][sample_idx];
-//        }
-//    }
-    clean.printSummary();
-}
-
 
 bool SignalCleaner::SaveFiltered(std::string filename){
     return output.save(filename, AudioFileFormat::Wave);

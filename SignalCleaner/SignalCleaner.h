@@ -22,19 +22,13 @@ public:
 
     void Filter();
 
-    double SNRPreFiltered(bool as_db);
-
-    double SNRPostFiltered(bool as_db);
-
     void PrintSummaries();
 
-    void SetClean(std::string filename);
 
 private:
     Fir1 internal_fir;
 
     bool FileExists(std::string filename);
-
 };
 
 
