@@ -7,15 +7,15 @@ int main(int argc, char ** argv) {
     switch(argc) {
         case 2:
             f1.load(argv[1]);
-	        f2.load("/dev/stdin");
-	        break;
-	    case 3:
+            f2.load("/dev/stdin");
+            break;
+        case 3:
             f1.load(argv[1]);
-	        f2.load(argv[2]);
-	        break;
+            f2.load(argv[2]);
+            break;
         default:
-	        std::cerr << "Usage: " << argv[0] << " <file1> [<file2>]" << std::endl;
-	        return EXIT_FAILURE;
+            std::cerr << "Usage: " << argv[0] << " <file1> [<file2>]" << std::endl;
+            return EXIT_FAILURE;
     }
 
     std::cout << "MEAN1  : " << wcorr_mean(f1) << std::endl;    

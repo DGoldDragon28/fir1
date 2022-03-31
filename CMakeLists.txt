@@ -63,6 +63,8 @@ add_library(fir_static
         ${LIBSRC}
         )
 
+add_executable(lms-fir main.cpp SignalCleaner.cpp Fir1.cpp)
+
 set_target_properties(fir_static PROPERTIES
         VERSION ${PROJECT_VERSION}
         PUBLIC_HEADER "${LIBINCLUDE}")
