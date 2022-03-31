@@ -2,7 +2,7 @@
 
 ## Documentation
 
-Take a look at the documentation, [here](https://DGoldDragon28.github.io/fir1/html/index.html).
+Take a look at the documentation, [here](https://DGoldDragon28.github.io/fir1/).
 
 ![alt tag](fir.png)
 
