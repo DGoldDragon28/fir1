@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['load_0',['load',['../classAudioFile.html#a0ff16123b519a4665e9f3e7d341f0a26',1,'AudioFile']]],
-  ['loadfrommemory_1',['loadFromMemory',['../classAudioFile.html#a138cd246abfc23b57caf1519d78b1312',1,'AudioFile']]]
+  ['ismono_0',['isMono',['../classAudioFile.html#a1057326fd2c2eca7cc7937f811868cf1',1,'AudioFile']]],
+  ['isstereo_1',['isStereo',['../classAudioFile.html#a380a188d95f8f23b7622dfe222a7e8f6',1,'AudioFile']]]
 ];

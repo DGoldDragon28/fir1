@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['getbitdepth_0',['getBitDepth',['../classAudioFile.html#a5495d5cb55911de54f0714e219130b48',1,'AudioFile']]],
-  ['getlengthinseconds_1',['getLengthInSeconds',['../classAudioFile.html#a5a6b01404675361b1c21c9c5fb5753d4',1,'AudioFile']]],
-  ['getnumchannels_2',['getNumChannels',['../classAudioFile.html#a514f860a956b4494ee8d8c806391d6b3',1,'AudioFile']]],
-  ['getnumsamplesperchannel_3',['getNumSamplesPerChannel',['../classAudioFile.html#ae1b5b4b7351a79dbf810bb34ede496b9',1,'AudioFile']]],
-  ['getsamplerate_4',['getSampleRate',['../classAudioFile.html#a8cd1b082af9db6bd180e4a63edcdefc9',1,'AudioFile']]]
+  ['filter_0',['filter',['../classFir1.html#a98b5f6c881da9eed30cbc6908fb48158',1,'Fir1::filter()'],['../classFir1fixed.html#a6d619c5661f54e60efbda62864769ce8',1,'Fir1fixed::filter()']]],
+  ['fir1_1',['Fir1',['../classFir1.html',1,'Fir1'],['../classFir1.html#a8164ab2294cf92979a009362682e2ecd',1,'Fir1::Fir1(const double(&amp;_coefficients)[nTaps])'],['../classFir1.html#a31b98d0df8a4c15f8c85590a5d49ed1d',1,'Fir1::Fir1(std::vector&lt; double &gt; _coefficients)'],['../classFir1.html#a507801740031cd31e91a02346e8fd6ac',1,'Fir1::Fir1(double *coefficients, unsigned number_of_taps)'],['../classFir1.html#a3391ecc885a06e14baf5d5ea8fb50588',1,'Fir1::Fir1(const char *coeffFile, unsigned number_of_taps=0)'],['../classFir1.html#ad2296bf585406c502f2e4271e9b4427c',1,'Fir1::Fir1(unsigned number_of_taps)']]],
+  ['fir1_2',['FIR1',['../md_README.html',1,'']]],
+  ['fir1fixed_3',['Fir1fixed',['../classFir1fixed.html',1,'Fir1fixed'],['../classFir1fixed.html#aeb94ea8013e2f25be531507e31fb9266',1,'Fir1fixed::Fir1fixed(short int *coefficients, unsigned bitshift, unsigned number_of_taps)'],['../classFir1fixed.html#a29f366708cc111a9d7c3465aaabef728',1,'Fir1fixed::Fir1fixed(const short int(&amp;_coefficients)[nTaps], unsigned bitshift)'],['../classFir1fixed.html#ab349f2a14a9e95154dc4a394e4733c4e',1,'Fir1fixed::Fir1fixed(const char *coeffFile, unsigned bitshift, unsigned number_of_taps=0)']]]
 ];

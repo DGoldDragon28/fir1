@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['signal_20cleaner_0',['Signal Cleaner',['../md_SignalCleaner_README.html',1,'']]]
+  ['fir1_0',['FIR1',['../md_README.html',1,'']]]
 ];

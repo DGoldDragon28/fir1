@@ -72,21 +72,21 @@ $(function() {
 <li>WAV</li>
 <li>AIFF</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md1"></a>
+<h1><a class="anchor" id="autotoc_md40"></a>
 Author</h1>
 <p ><a class="el" href="classAudioFile.html">AudioFile</a> is written and maintained by Adam Stark.</p>
 <p ><a href="http://www.adamstark.co.uk">http://www.adamstark.co.uk</a></p>
-<h1><a class="anchor" id="autotoc_md2"></a>
+<h1><a class="anchor" id="autotoc_md41"></a>
 Usage</h1>
-<h2><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md42"></a>
 Create an AudioFile object:</h2>
 <pre class="fragment">    #include "AudioFile.h"
 
     AudioFile&lt;double&gt; audioFile;
-</pre> <h2><a class="anchor" id="autotoc_md4"></a>
+</pre> <h2><a class="anchor" id="autotoc_md43"></a>
 Load an audio file:</h2>
 <pre class="fragment">    audioFile.load ("/path/to/my/audiofile.wav");
-</pre> <h2><a class="anchor" id="autotoc_md5"></a>
+</pre> <h2><a class="anchor" id="autotoc_md44"></a>
 Get some information about the loaded audio:</h2>
 <pre class="fragment">    int sampleRate = audioFile.getSampleRate();
     int bitDepth = audioFile.getBitDepth();
@@ -100,7 +100,7 @@ Get some information about the loaded audio:</h2>
 
     // or, just use this quick shortcut to print a summary to the console
     audioFile.printSummary();
-</pre> <h2><a class="anchor" id="autotoc_md6"></a>
+</pre> <h2><a class="anchor" id="autotoc_md45"></a>
 Access the samples directly:</h2>
 <pre class="fragment">    int channel = 0;
     int numSamples = audioFile.getNumSamplesPerChannel();
@@ -109,7 +109,7 @@ Access the samples directly:</h2>
     {
             double currentSample = audioFile.samples[channel][i];
     }
-</pre> <h2><a class="anchor" id="autotoc_md7"></a>
+</pre> <h2><a class="anchor" id="autotoc_md46"></a>
 Replace the AudioFile audio buffer with another</h2>
 <pre class="fragment">    // 1. Create an AudioBuffer 
     // (BTW, AudioBuffer is just a vector of vectors)
@@ -144,7 +144,7 @@ Replace the AudioFile audio buffer with another</h2>
 
     // 5. Put into the AudioFile object
     bool ok = audioFile.setAudioBuffer (buffer);
-</pre><h2><a class="anchor" id="autotoc_md8"></a>
+</pre><h2><a class="anchor" id="autotoc_md47"></a>
 Resize the audio buffer</h2>
 <pre class="fragment">    // Set both the number of channels and number of samples per channel
     audioFile.setAudioBufferSize (numChannels, numSamples);
@@ -154,11 +154,11 @@ Resize the audio buffer</h2>
 
     // Set the number of channels
     audioFile.setNumChannels (int numChannels);
-</pre> <h2><a class="anchor" id="autotoc_md9"></a>
+</pre> <h2><a class="anchor" id="autotoc_md48"></a>
 Set bit depth and sample rate</h2>
 <pre class="fragment">    audioFile.setBitDepth (24);
     audioFile.setSampleRate (44100);
-</pre> <h2><a class="anchor" id="autotoc_md10"></a>
+</pre> <h2><a class="anchor" id="autotoc_md49"></a>
 Save the audio file to disk</h2>
 <pre class="fragment">    // Wave file (implicit)
     audioFile.save ("path/to/desired/audioFile.wav");
@@ -168,77 +168,77 @@ Save the audio file to disk</h2>
 
     // Aiff file
     audioFile.save ("path/to/desired/audioFile.aif", AudioFileFormat::Aiff);
-</pre><h1><a class="anchor" id="autotoc_md11"></a>
+</pre><h1><a class="anchor" id="autotoc_md50"></a>
 Examples</h1>
 <p >Please see the <code>examples</code> folder for some examples on library usage.</p>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md51"></a>
 A Note On Types</h1>
 <p ><a class="el" href="classAudioFile.html">AudioFile</a> is a template class and so it can be instantiated using floating point precision: </p><pre class="fragment">    AudioFile&lt;float&gt; audioFile;
 </pre><p> ...or double precision: </p><pre class="fragment">    AudioFile&lt;double&gt; audioFile;
 </pre><p> This simply reflects the data type you would like to use to store the underlying audio samples. You can still read or write 8, 16 or 24-bit audio files, regardless of the type that you use (unless your system uses a precision for floats less than your desired bit depth).</p>
 <p >I have heard of people using the library with other types, but I have not designed for those cases. Let me know if you are interested in this supporting a specific type more formally.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md52"></a>
 Error Messages</h1>
 <p >By default, the library logs error messages to the console to provide information on what has gone wrong (e.g. a file we tried to load didn't exist).</p>
 <p >If you prefer not to see these messages, you can disable this error logging behaviour using: </p><pre class="fragment">    audioFile.shouldLogErrorsToConsole (false);
-</pre><h1><a class="anchor" id="autotoc_md14"></a>
+</pre><h1><a class="anchor" id="autotoc_md53"></a>
 Versions</h1>
-<h4><a class="anchor" id="autotoc_md15"></a>
+<h4><a class="anchor" id="autotoc_md54"></a>
 1.1.0 - 15th January 2022</h4>
 <ul>
 <li>Moved project to MIT licence</li>
 <li>Added option to load an audio file already in memory</li>
 <li>CI Workflow improvements and bug fixes</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md16"></a>
+<h4><a class="anchor" id="autotoc_md55"></a>
 1.0.9 - 23rd January 2021</h4>
 <ul>
 <li>Faster loading of audio files</li>
 <li>Bug fixes</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md17"></a>
+<h4><a class="anchor" id="autotoc_md56"></a>
 1.0.8 - 18th October 2020</h4>
 <ul>
 <li>CMake support</li>
 <li>Construct instances with a file path</li>
 <li>Bug fixes</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md18"></a>
+<h4><a class="anchor" id="autotoc_md57"></a>
 1.0.7 - 3rd July 2020</h4>
 <ul>
 <li>Support for 32-bit audio files</li>
 <li>Support for multi-channel audio files</li>
 <li>Reading/writing of <a href="http://www.ixml.info/">iXML data chunks</a></li>
 </ul>
-<h4><a class="anchor" id="autotoc_md19"></a>
+<h4><a class="anchor" id="autotoc_md58"></a>
 1.0.6 - 29th February 2020</h4>
 <ul>
 <li>Made error logging to the console optional</li>
 <li>Fixed lots of compiler warnings</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md20"></a>
+<h4><a class="anchor" id="autotoc_md59"></a>
 1.0.5 - 14th October 2019</h4>
 <ul>
 <li>Added include of &lt;algorithm&gt; to better support Visual Studio</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md21"></a>
+<h4><a class="anchor" id="autotoc_md60"></a>
 1.0.4 - 13th October 2019</h4>
 <ul>
 <li>Changed to a header-only library. Now you can just include <a class="el" href="AudioFile_8h.html">AudioFile.h</a></li>
 <li>Bug fixes</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md22"></a>
+<h4><a class="anchor" id="autotoc_md61"></a>
 1.0.3 - 28th October 2018</h4>
 <ul>
 <li>Bug fixes</li>
 <li>Documentation updates</li>
 </ul>
-<h4><a class="anchor" id="autotoc_md23"></a>
+<h4><a class="anchor" id="autotoc_md62"></a>
 1.0.2 - 6th June 2017</h4>
 <ul>
 <li>Bug fixes</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md24"></a>
+<h1><a class="anchor" id="autotoc_md63"></a>
 Contributions</h1>
 <ul>
 <li>Multichannel (i.e. &gt;2 channels) audio file support (<a href="https://github.com/Sidelobe">Sidelobe</a>)</li>
@@ -249,7 +249,7 @@ Contributions</h1>
 <li>Improvements to Github Actions workflow (<a href="https://github.com/emiro85">emiro85</a>)</li>
 <li>Pull request review (<a href="https://github.com/MatthieuHernandez">MatthieuHernandez</a>)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md25"></a>
+<h1><a class="anchor" id="autotoc_md64"></a>
 Want to Contribute?</h1>
 <p >If you would like to submit a pull request for this library, please do! But kindly follow the following simple guidelines...</p>
 <ul>
@@ -257,7 +257,7 @@ Want to Contribute?</h1>
 <li>Avoid unnecessarily changing a large number of lines - e.g. commits changing the number of spaces in indentations on all lines (and so on)</li>
 <li>Keep to the code style of this library which is the <a href="https://juce.com/discover/stories/coding-standards">JUCE Coding Standards</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md26"></a>
+<h1><a class="anchor" id="autotoc_md65"></a>
 License</h1>
 <p >MIT License</p>
 <p >Copyright (c) 2017 Adam Stark</p>
@@ -268,7 +268,7 @@ License</h1>
 </div><!-- PageDoc -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu Mar 31 2022 15:49:50 for fir1 by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
+Generated on Thu Mar 31 2022 15:52:58 for fir1 by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3
 </small></address>
 </body>
 </html>
