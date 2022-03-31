@@ -1,5 +1,9 @@
 # FIR1
 
+## Documentation
+
+Take a look at the documentation, [here](https://DGoldDragon28.github.io/fir1/html/index.html).
+
 ![alt tag](fir.png)
 
 An efficient finite impulse response (FIR) filter class
