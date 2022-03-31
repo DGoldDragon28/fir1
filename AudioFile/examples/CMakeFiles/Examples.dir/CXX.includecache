@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/ross/CLionProjects/fir1/AudioFile/examples/examples.cpp
+iostream
+-
+cmath
+-
+AudioFile.h
+-
+
+AudioFile.h
+iostream
+-
+vector
+-
+cassert
+-
+string
+-
+cstring
+-
+fstream
+-
+unordered_map
+-
+iterator
+-
+algorithm
+-
+limits
+-
+

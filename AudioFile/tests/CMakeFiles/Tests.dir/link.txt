@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/Tests.dir/main.cpp.o CMakeFiles/Tests.dir/GeneralTests.cpp.o CMakeFiles/Tests.dir/WavLoadingTests.cpp.o CMakeFiles/Tests.dir/AiffLoadingTests.cpp.o CMakeFiles/Tests.dir/FileWritingTests.cpp.o  -o Tests 
