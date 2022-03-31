@@ -1,0 +1,141 @@
+\hypertarget{Fir1_8h_source}{}\doxysubsection{Fir1.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{/*}}
+\DoxyCodeLine{2 \textcolor{comment}{License: MIT License (http://www.opensource.org/licenses/mit-\/license.php)}}
+\DoxyCodeLine{3 \textcolor{comment}{}}
+\DoxyCodeLine{4 \textcolor{comment}{Permission is hereby granted, free of charge, to any person obtaining a copy}}
+\DoxyCodeLine{5 \textcolor{comment}{of this software and associated documentation files (the "{}Software"{}), to deal}}
+\DoxyCodeLine{6 \textcolor{comment}{in the Software without restriction, including without limitation the rights}}
+\DoxyCodeLine{7 \textcolor{comment}{to use, copy, modify, merge, publish, distribute, sublicense, and/or sell}}
+\DoxyCodeLine{8 \textcolor{comment}{copies of the Software, and to permit persons to whom the Software is}}
+\DoxyCodeLine{9 \textcolor{comment}{furnished to do so, subject to the following conditions:}}
+\DoxyCodeLine{10 \textcolor{comment}{}}
+\DoxyCodeLine{11 \textcolor{comment}{The above copyright notice and this permission notice shall be included in}}
+\DoxyCodeLine{12 \textcolor{comment}{all copies or substantial portions of the Software.}}
+\DoxyCodeLine{13 \textcolor{comment}{}}
+\DoxyCodeLine{14 \textcolor{comment}{THE SOFTWARE IS PROVIDED "{}AS IS"{}, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR}}
+\DoxyCodeLine{15 \textcolor{comment}{IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,}}
+\DoxyCodeLine{16 \textcolor{comment}{FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE}}
+\DoxyCodeLine{17 \textcolor{comment}{AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER}}
+\DoxyCodeLine{18 \textcolor{comment}{LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,}}
+\DoxyCodeLine{19 \textcolor{comment}{OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN}}
+\DoxyCodeLine{20 \textcolor{comment}{THE SOFTWARE.}}
+\DoxyCodeLine{21 \textcolor{comment}{*/}}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23 \textcolor{comment}{/* (C) 2013-\/2021 Graeme Hattan \& Bernd Porr */}}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{25 \textcolor{preprocessor}{\#ifndef FIR1\_H}}
+\DoxyCodeLine{26 \textcolor{preprocessor}{\#define FIR1\_H}}
+\DoxyCodeLine{27 }
+\DoxyCodeLine{28 \textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{29 \textcolor{preprocessor}{\#include <vector>}}
+\DoxyCodeLine{30 }
+\DoxyCodeLine{36 \textcolor{keyword}{class }\mbox{\hyperlink{classFir1}{Fir1}} \{}
+\DoxyCodeLine{37 \textcolor{keyword}{public}:}
+\DoxyCodeLine{43         \textcolor{keyword}{template} <\textcolor{keywordtype}{unsigned} nTaps> \mbox{\hyperlink{classFir1_a8164ab2294cf92979a009362682e2ecd}{Fir1}}(\textcolor{keyword}{const} \textcolor{keywordtype}{double} (\&\_coefficients)[nTaps]) :}
+\DoxyCodeLine{44                 coefficients(new double[nTaps]),}
+\DoxyCodeLine{45                 buffer(new double[nTaps]()),}
+\DoxyCodeLine{46                 taps(nTaps) \{}
+\DoxyCodeLine{47                 \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i=0;i<nTaps;i++) \{}
+\DoxyCodeLine{48                         coefficients[i] = \_coefficients[i];}
+\DoxyCodeLine{49                         buffer[i] = 0;}
+\DoxyCodeLine{50                 \}}
+\DoxyCodeLine{51         \}}
+\DoxyCodeLine{52 }
+\DoxyCodeLine{57         \mbox{\hyperlink{classFir1_a31b98d0df8a4c15f8c85590a5d49ed1d}{Fir1}}(std::vector<double> \_coefficients) \{}
+\DoxyCodeLine{58                 initWithVector(\_coefficients);}
+\DoxyCodeLine{59         \}}
+\DoxyCodeLine{60 }
+\DoxyCodeLine{66         \mbox{\hyperlink{classFir1_a507801740031cd31e91a02346e8fd6ac}{Fir1}}(\textcolor{keywordtype}{double} *coefficients, \textcolor{keywordtype}{unsigned} number\_of\_taps);}
+\DoxyCodeLine{67 }
+\DoxyCodeLine{74         \mbox{\hyperlink{classFir1_a3391ecc885a06e14baf5d5ea8fb50588}{Fir1}}(\textcolor{keyword}{const} \textcolor{keywordtype}{char}* coeffFile, \textcolor{keywordtype}{unsigned} number\_of\_taps = 0);}
+\DoxyCodeLine{75 }
+\DoxyCodeLine{81         \mbox{\hyperlink{classFir1_ad2296bf585406c502f2e4271e9b4427c}{Fir1}}(\textcolor{keywordtype}{unsigned} number\_of\_taps);}
+\DoxyCodeLine{82 }
+\DoxyCodeLine{86         \mbox{\hyperlink{classFir1_a86233a005b6a50a461169ff262825970}{\string~Fir1}}();}
+\DoxyCodeLine{87 }
+\DoxyCodeLine{88         }
+\DoxyCodeLine{94         \textcolor{keyword}{inline} \textcolor{keywordtype}{double} \mbox{\hyperlink{classFir1_a98b5f6c881da9eed30cbc6908fb48158}{filter}}(\textcolor{keywordtype}{double} input) \{}
+\DoxyCodeLine{95                 \textcolor{keyword}{const} \textcolor{keywordtype}{double} *coeff     = coefficients;}
+\DoxyCodeLine{96                 \textcolor{keyword}{const} \textcolor{keywordtype}{double} *\textcolor{keyword}{const} coeff\_end = coefficients + taps;}
+\DoxyCodeLine{97                 }
+\DoxyCodeLine{98                 \textcolor{keywordtype}{double} *buf\_val = buffer + offset;}
+\DoxyCodeLine{99                 }
+\DoxyCodeLine{100                 *buf\_val = input;}
+\DoxyCodeLine{101                 \textcolor{keywordtype}{double} output\_ = 0;}
+\DoxyCodeLine{102                 }
+\DoxyCodeLine{103                 \textcolor{keywordflow}{while}(buf\_val >= buffer)}
+\DoxyCodeLine{104                         output\_ += *buf\_val-\/-\/ * *coeff++;}
+\DoxyCodeLine{105                 }
+\DoxyCodeLine{106                 buf\_val = buffer + taps-\/1;}
+\DoxyCodeLine{107                 }
+\DoxyCodeLine{108                 \textcolor{keywordflow}{while}(coeff < coeff\_end)}
+\DoxyCodeLine{109                         output\_ += *buf\_val-\/-\/ * *coeff++;}
+\DoxyCodeLine{110                 }
+\DoxyCodeLine{111                 \textcolor{keywordflow}{if}(++offset >= taps)}
+\DoxyCodeLine{112                         offset = 0;}
+\DoxyCodeLine{113                 }
+\DoxyCodeLine{114                 \textcolor{keywordflow}{return} output\_;}
+\DoxyCodeLine{115         \}}
+\DoxyCodeLine{116 }
+\DoxyCodeLine{117 }
+\DoxyCodeLine{124         \textcolor{keyword}{inline} \textcolor{keywordtype}{void} \mbox{\hyperlink{classFir1_ae7dd501b1f452c51944b7cd3ff0a8ede}{lms\_update}}(\textcolor{keywordtype}{double} error) \{}
+\DoxyCodeLine{125                 \textcolor{keywordtype}{double} *coeff     = coefficients;}
+\DoxyCodeLine{126                 \textcolor{keyword}{const} \textcolor{keywordtype}{double} *coeff\_end = coefficients + taps;}
+\DoxyCodeLine{127         }
+\DoxyCodeLine{128                 \textcolor{keywordtype}{double} *buf\_val = buffer + offset;}
+\DoxyCodeLine{129                 }
+\DoxyCodeLine{130                 \textcolor{keywordflow}{while}(buf\_val >= buffer) \{}
+\DoxyCodeLine{131                         *coeff++ += *buf\_val-\/-\/ * error * mu;}
+\DoxyCodeLine{132                 \}}
+\DoxyCodeLine{133                 }
+\DoxyCodeLine{134                 buf\_val = buffer + taps-\/1;}
+\DoxyCodeLine{135                 }
+\DoxyCodeLine{136                 \textcolor{keywordflow}{while}(coeff < coeff\_end) \{}
+\DoxyCodeLine{137                         *coeff++ += *buf\_val-\/-\/ * error * mu;}
+\DoxyCodeLine{138                 \}}
+\DoxyCodeLine{139         \}}
+\DoxyCodeLine{140 }
+\DoxyCodeLine{145         \textcolor{keywordtype}{void} \mbox{\hyperlink{classFir1_ae974af5d0263423334fe9ad916a666a2}{setLearningRate}}(\textcolor{keywordtype}{double} \_mu) \{mu = \_mu;\};}
+\DoxyCodeLine{146 }
+\DoxyCodeLine{150         \textcolor{keywordtype}{double} \mbox{\hyperlink{classFir1_ac96ecc1b339b541e0aeab530669bc99c}{getLearningRate}}() \{\textcolor{keywordflow}{return} mu;\};}
+\DoxyCodeLine{151 }
+\DoxyCodeLine{155         \textcolor{keywordtype}{void} \mbox{\hyperlink{classFir1_a3516709a67439e6fa1ecd3aac42fd719}{reset}}();}
+\DoxyCodeLine{156 }
+\DoxyCodeLine{160         \textcolor{keywordtype}{void} \mbox{\hyperlink{classFir1_add6c80346d4fec6e9a270df55f604456}{zeroCoeff}}();}
+\DoxyCodeLine{161 }
+\DoxyCodeLine{170         \textcolor{keywordtype}{void} \mbox{\hyperlink{classFir1_a5b1970b5d534d61802dfe9109fd48522}{getCoeff}}(\textcolor{keywordtype}{double}* coeff\_data, \textcolor{keywordtype}{unsigned} number\_of\_taps) \textcolor{keyword}{const};}
+\DoxyCodeLine{171 }
+\DoxyCodeLine{175         std::vector<double> \mbox{\hyperlink{classFir1_ac552ad5aa093e0a38acfaecfba6db0f7}{getCoeffVector}}()\textcolor{keyword}{ const }\{}
+\DoxyCodeLine{176                 \textcolor{keywordflow}{return} std::vector<double>(coefficients,coefficients+taps);}
+\DoxyCodeLine{177         \}}
+\DoxyCodeLine{178 }
+\DoxyCodeLine{182         \textcolor{keywordtype}{unsigned} \mbox{\hyperlink{classFir1_a83f3a1bd1c3c8cc571962c6b561a9e29}{getTaps}}() \{\textcolor{keywordflow}{return} taps;\};}
+\DoxyCodeLine{183 }
+\DoxyCodeLine{189         \textcolor{keyword}{inline} \textcolor{keywordtype}{double} \mbox{\hyperlink{classFir1_af82d83c241370e34cfdbb61ca82f29fb}{getTapInputPower}}() \{}
+\DoxyCodeLine{190                 \textcolor{keywordtype}{double} *buf\_val = buffer;}
+\DoxyCodeLine{191                 }
+\DoxyCodeLine{192                 \textcolor{keywordtype}{double} p = 0;}
+\DoxyCodeLine{193                 }
+\DoxyCodeLine{194                 \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} i = 0; i < taps; i++) \{}
+\DoxyCodeLine{195                         p += (*buf\_val) * (*buf\_val);}
+\DoxyCodeLine{196                         buf\_val++;}
+\DoxyCodeLine{197                 \}}
+\DoxyCodeLine{198         }
+\DoxyCodeLine{199                 \textcolor{keywordflow}{return} p;}
+\DoxyCodeLine{200         \}}
+\DoxyCodeLine{201 }
+\DoxyCodeLine{202 \textcolor{keyword}{private}:}
+\DoxyCodeLine{203         \textcolor{keywordtype}{void} initWithVector(std::vector<double> \_coefficients);}
+\DoxyCodeLine{204         }
+\DoxyCodeLine{205         \textcolor{keywordtype}{double}        *coefficients;}
+\DoxyCodeLine{206         \textcolor{keywordtype}{double}        *buffer;}
+\DoxyCodeLine{207         \textcolor{keywordtype}{unsigned}      taps;}
+\DoxyCodeLine{208         \textcolor{keywordtype}{unsigned}      offset = 0;}
+\DoxyCodeLine{209         \textcolor{keywordtype}{double}        mu = 0;}
+\DoxyCodeLine{210 \};}
+\DoxyCodeLine{211 }
+\DoxyCodeLine{212 \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}
