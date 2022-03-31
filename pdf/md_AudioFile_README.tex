@@ -1,0 +1,192 @@
+  
+
+A simple header-\/only C++ library for reading and writing audio files.
+
+Current supported formats\+:
+
+
+\begin{DoxyItemize}
+\item WAV
+\item AIFF
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md1}{}\doxysubsection{Author}\label{md_AudioFile_README_autotoc_md1}
+\mbox{\hyperlink{classAudioFile}{Audio\+File}} is written and maintained by Adam Stark.
+
+\href{http://www.adamstark.co.uk}{\texttt{ http\+://www.\+adamstark.\+co.\+uk}}\hypertarget{md_AudioFile_README_autotoc_md2}{}\doxysubsection{Usage}\label{md_AudioFile_README_autotoc_md2}
+\hypertarget{md_AudioFile_README_autotoc_md3}{}\doxysubsubsection{Create an Audio\+File object\+:}\label{md_AudioFile_README_autotoc_md3}
+\begin{DoxyVerb}    #include "AudioFile.h"
+
+    AudioFile<double> audioFile;
+\end{DoxyVerb}
+ \hypertarget{md_AudioFile_README_autotoc_md4}{}\doxysubsubsection{Load an audio file\+:}\label{md_AudioFile_README_autotoc_md4}
+\begin{DoxyVerb}    audioFile.load ("/path/to/my/audiofile.wav");
+\end{DoxyVerb}
+ \hypertarget{md_AudioFile_README_autotoc_md5}{}\doxysubsubsection{Get some information about the loaded audio\+:}\label{md_AudioFile_README_autotoc_md5}
+\begin{DoxyVerb}    int sampleRate = audioFile.getSampleRate();
+    int bitDepth = audioFile.getBitDepth();
+
+    int numSamples = audioFile.getNumSamplesPerChannel();
+    double lengthInSeconds = audioFile.getLengthInSeconds();
+
+    int numChannels = audioFile.getNumChannels();
+    bool isMono = audioFile.isMono();
+    bool isStereo = audioFile.isStereo();
+
+    // or, just use this quick shortcut to print a summary to the console
+    audioFile.printSummary();
+\end{DoxyVerb}
+ \hypertarget{md_AudioFile_README_autotoc_md6}{}\doxysubsubsection{Access the samples directly\+:}\label{md_AudioFile_README_autotoc_md6}
+\begin{DoxyVerb}    int channel = 0;
+    int numSamples = audioFile.getNumSamplesPerChannel();
+
+    for (int i = 0; i < numSamples; i++)
+    {
+            double currentSample = audioFile.samples[channel][i];
+    }
+\end{DoxyVerb}
+ \hypertarget{md_AudioFile_README_autotoc_md7}{}\doxysubsubsection{Replace the Audio\+File audio buffer with another}\label{md_AudioFile_README_autotoc_md7}
+\begin{DoxyVerb}    // 1. Create an AudioBuffer 
+    // (BTW, AudioBuffer is just a vector of vectors)
+
+    AudioFile<double>::AudioBuffer buffer;
+
+    // 2. Set to (e.g.) two channels
+    buffer.resize (2);
+
+    // 3. Set number of samples per channel
+    buffer[0].resize (100000);
+    buffer[1].resize (100000);
+
+    // 4. do something here to fill the buffer with samples, e.g.
+
+    #include <math.h> // somewhere earler (for M_PI and sinf())
+
+    // then...
+
+    int numChannels = 2;
+    int numSamplesPerChannel = 100000;
+    float sampleRate = 44100.f;
+    float frequency = 440.f;
+
+    for (int i = 0; i < numSamplesPerChannel; i++)
+    {
+    float sample = sinf (2. * M_PI * ((float) i / sampleRate) * frequency) ;
+
+    for (int channel = 0; channel < numChannels; channel++)
+         buffer[channel][i] = sample * 0.5;
+    }
+
+    // 5. Put into the AudioFile object
+    bool ok = audioFile.setAudioBuffer (buffer);
+\end{DoxyVerb}
+\hypertarget{md_AudioFile_README_autotoc_md8}{}\doxysubsubsection{Resize the audio buffer}\label{md_AudioFile_README_autotoc_md8}
+\begin{DoxyVerb}    // Set both the number of channels and number of samples per channel
+    audioFile.setAudioBufferSize (numChannels, numSamples);
+
+    // Set the number of samples per channel
+    audioFile.setNumSamplesPerChannel (numSamples);
+
+    // Set the number of channels
+    audioFile.setNumChannels (int numChannels);
+\end{DoxyVerb}
+ \hypertarget{md_AudioFile_README_autotoc_md9}{}\doxysubsubsection{Set bit depth and sample rate}\label{md_AudioFile_README_autotoc_md9}
+\begin{DoxyVerb}    audioFile.setBitDepth (24);
+    audioFile.setSampleRate (44100);
+\end{DoxyVerb}
+ \hypertarget{md_AudioFile_README_autotoc_md10}{}\doxysubsubsection{Save the audio file to disk}\label{md_AudioFile_README_autotoc_md10}
+\begin{DoxyVerb}    // Wave file (implicit)
+    audioFile.save ("path/to/desired/audioFile.wav");
+
+    // Wave file (explicit)
+    audioFile.save ("path/to/desired/audioFile.wav", AudioFileFormat::Wave);
+
+    // Aiff file
+    audioFile.save ("path/to/desired/audioFile.aif", AudioFileFormat::Aiff);
+\end{DoxyVerb}
+\hypertarget{md_AudioFile_README_autotoc_md11}{}\doxysubsection{Examples}\label{md_AudioFile_README_autotoc_md11}
+Please see the {\ttfamily examples} folder for some examples on library usage.\hypertarget{md_AudioFile_README_autotoc_md12}{}\doxysubsection{A Note On Types}\label{md_AudioFile_README_autotoc_md12}
+\mbox{\hyperlink{classAudioFile}{Audio\+File}} is a template class and so it can be instantiated using floating point precision\+: \begin{DoxyVerb}    AudioFile<float> audioFile;
+\end{DoxyVerb}
+ ...or double precision\+: \begin{DoxyVerb}    AudioFile<double> audioFile;
+\end{DoxyVerb}
+ This simply reflects the data type you would like to use to store the underlying audio samples. You can still read or write 8, 16 or 24-\/bit audio files, regardless of the type that you use (unless your system uses a precision for floats less than your desired bit depth).
+
+I have heard of people using the library with other types, but I have not designed for those cases. Let me know if you are interested in this supporting a specific type more formally.\hypertarget{md_AudioFile_README_autotoc_md13}{}\doxysubsection{Error Messages}\label{md_AudioFile_README_autotoc_md13}
+By default, the library logs error messages to the console to provide information on what has gone wrong (e.\+g. a file we tried to load didn\textquotesingle{}t exist).
+
+If you prefer not to see these messages, you can disable this error logging behaviour using\+: \begin{DoxyVerb}    audioFile.shouldLogErrorsToConsole (false);
+\end{DoxyVerb}
+\hypertarget{md_AudioFile_README_autotoc_md14}{}\doxysubsection{Versions}\label{md_AudioFile_README_autotoc_md14}
+\hypertarget{md_AudioFile_README_autotoc_md15}{}\doxysubparagraph{1.\+1.\+0 -\/ 15th January 2022}\label{md_AudioFile_README_autotoc_md15}
+
+\begin{DoxyItemize}
+\item Moved project to MIT licence
+\item Added option to load an audio file already in memory
+\item CI Workflow improvements and bug fixes
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md16}{}\doxysubparagraph{1.\+0.\+9 -\/ 23rd January 2021}\label{md_AudioFile_README_autotoc_md16}
+
+\begin{DoxyItemize}
+\item Faster loading of audio files
+\item Bug fixes
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md17}{}\doxysubparagraph{1.\+0.\+8 -\/ 18th October 2020}\label{md_AudioFile_README_autotoc_md17}
+
+\begin{DoxyItemize}
+\item CMake support
+\item Construct instances with a file path
+\item Bug fixes
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md18}{}\doxysubparagraph{1.\+0.\+7 -\/ 3rd July 2020}\label{md_AudioFile_README_autotoc_md18}
+
+\begin{DoxyItemize}
+\item Support for 32-\/bit audio files
+\item Support for multi-\/channel audio files
+\item Reading/writing of \href{http://www.ixml.info/}{\texttt{ i\+XML data chunks}}
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md19}{}\doxysubparagraph{1.\+0.\+6 -\/ 29th February 2020}\label{md_AudioFile_README_autotoc_md19}
+
+\begin{DoxyItemize}
+\item Made error logging to the console optional
+\item Fixed lots of compiler warnings
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md20}{}\doxysubparagraph{1.\+0.\+5 -\/ 14th October 2019}\label{md_AudioFile_README_autotoc_md20}
+
+\begin{DoxyItemize}
+\item Added include of $<$algorithm$>$ to better support Visual Studio
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md21}{}\doxysubparagraph{1.\+0.\+4 -\/ 13th October 2019}\label{md_AudioFile_README_autotoc_md21}
+
+\begin{DoxyItemize}
+\item Changed to a header-\/only library. Now you can just include \mbox{\hyperlink{AudioFile_8h}{Audio\+File.\+h}}
+\item Bug fixes
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md22}{}\doxysubparagraph{1.\+0.\+3 -\/ 28th October 2018}\label{md_AudioFile_README_autotoc_md22}
+
+\begin{DoxyItemize}
+\item Bug fixes
+\item Documentation updates
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md23}{}\doxysubparagraph{1.\+0.\+2 -\/ 6th June 2017}\label{md_AudioFile_README_autotoc_md23}
+
+\begin{DoxyItemize}
+\item Bug fixes
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md24}{}\doxysubsection{Contributions}\label{md_AudioFile_README_autotoc_md24}
+
+\begin{DoxyItemize}
+\item Multichannel (i.\+e. \texorpdfstring{$>$}{>}2 channels) audio file support (\href{https://github.com/Sidelobe}{\texttt{ Sidelobe}})
+\item Read/write of i\+XML data chunks (\href{https://github.com/mynameisjohn}{\texttt{ mynameisjohn}})
+\item Remove warnings (\href{https://github.com/Abhinav1997}{\texttt{ Abhinav1997}})
+\item Better support on Ubuntu (\href{https://github.com/BenjaminHinchliff}{\texttt{ Benjamin\+Hinchliff}})
+\item Faster loading of audio files (\href{https://github.com/helloimmatt/}{\texttt{ helloimmatt}})
+\item Improvements to Github Actions workflow (\href{https://github.com/emiro85}{\texttt{ emiro85}})
+\item Pull request review (\href{https://github.com/MatthieuHernandez}{\texttt{ Matthieu\+Hernandez}})
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md25}{}\doxysubsection{Want to Contribute?}\label{md_AudioFile_README_autotoc_md25}
+If you would like to submit a pull request for this library, please do! But kindly follow the following simple guidelines...
+
+
+\begin{DoxyItemize}
+\item Make the changes as concise as is possible for the change you are proposing
+\item Avoid unnecessarily changing a large number of lines -\/ e.\+g. commits changing the number of spaces in indentations on all lines (and so on)
+\item Keep to the code style of this library which is the \href{https://juce.com/discover/stories/coding-standards}{\texttt{ JUCE Coding Standards}}
+\end{DoxyItemize}\hypertarget{md_AudioFile_README_autotoc_md26}{}\doxysubsection{License}\label{md_AudioFile_README_autotoc_md26}
+MIT License
+
+Copyright (c) 2017 Adam Stark
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \char`\"{}\+Software\char`\"{}), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions\+:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED \char`\"{}\+AS IS\char`\"{}, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 

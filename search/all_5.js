@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zerocoeff_0',['zeroCoeff',['../classFir1.html#add6c80346d4fec6e9a270df55f604456',1,'Fir1']]]
+  ['printsummary_0',['printSummary',['../classAudioFile.html#a7b88c68133a9ac92149c58499e026360',1,'AudioFile']]]
 ];

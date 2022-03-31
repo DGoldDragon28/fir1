@@ -1,0 +1,36 @@
+The {\ttfamily wave-\/correlate} tool provides facility to compute standard deviation, covariance, pearsons correlation coeffiecient and SNR for input wav files.\hypertarget{md_correlate_README_autotoc_md32}{}\doxysubsection{Build}\label{md_correlate_README_autotoc_md32}
+To try out {\ttfamily wav-\/correlate}, you can build the program with {\ttfamily cmake} from the root level {\ttfamily fir/} directory or from this directory as shown\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake .}
+\DoxyCodeLine{make}
+
+\end{DoxyCode}
+\hypertarget{md_correlate_README_autotoc_md33}{}\doxysubsection{Usage}\label{md_correlate_README_autotoc_md33}
+Example usage is shown\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Usage: wav-\/correlate <file1> [<file2>]}
+
+\end{DoxyCode}
+
+
+If no secondary file is specified, the program will read from {\ttfamily stdin}.\hypertarget{md_correlate_README_autotoc_md34}{}\doxysubsection{Output}\label{md_correlate_README_autotoc_md34}
+The program outputs metrics to {\ttfamily stdout}. Example program usage and output is shown\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\$ correlate/wav-\/correlate wav-\/files/sinewave441Hz.wav wav-\/files/sinewave882Hz.wav}
+\DoxyCodeLine{}
+\DoxyCodeLine{MEAN1  : -\/3.05176e-\/07}
+\DoxyCodeLine{MEAN2  : 0}
+\DoxyCodeLine{STDEV1 : 0.707091}
+\DoxyCodeLine{STDEV2 : 0.707095}
+\DoxyCodeLine{COV    : 2.62016e-\/22}
+\DoxyCodeLine{RHO    : 5.24051e-\/22}
+\DoxyCodeLine{SNR    : -\/980.009 dB}
+
+\end{DoxyCode}
+ 

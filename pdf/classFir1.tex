@@ -33,7 +33,7 @@ void \mbox{\hyperlink{classFir1_add6c80346d4fec6e9a270df55f604456}{zero\+Coeff}}
 \item 
 void \mbox{\hyperlink{classFir1_a5b1970b5d534d61802dfe9109fd48522}{get\+Coeff}} (double $\ast$coeff\+\_\+data, unsigned number\+\_\+of\+\_\+taps) const
 \item 
-std\+::vector$<$ double $>$ \mbox{\hyperlink{classFir1_ac552ad5aa093e0a38acfaecfba6db0f7}{get\+Coeff\+Vector}} () const
+std\+::vector$<$ double $>$ \mbox{\hyperlink{classFir1_ad18c498378f7a2affaffddc1b4a238ad}{get\+Coeff\+Vector}} () const
 \item 
 unsigned \mbox{\hyperlink{classFir1_a83f3a1bd1c3c8cc571962c6b561a9e29}{get\+Taps}} ()
 \item 
@@ -138,11 +138,11 @@ Copies the current filter coefficients into a provided array. Useful after an ad
 {\em std\+::out\+\_\+of\+\_\+range} & number\+\_\+of\+\_\+taps is less the actual number of taps. \\
 \hline
 \end{DoxyExceptions}
-\mbox{\Hypertarget{classFir1_ac552ad5aa093e0a38acfaecfba6db0f7}\label{classFir1_ac552ad5aa093e0a38acfaecfba6db0f7}} 
+\mbox{\Hypertarget{classFir1_ad18c498378f7a2affaffddc1b4a238ad}\label{classFir1_ad18c498378f7a2affaffddc1b4a238ad}} 
 \index{Fir1@{Fir1}!getCoeffVector@{getCoeffVector}}
 \index{getCoeffVector@{getCoeffVector}!Fir1@{Fir1}}
 \doxyparagraph{\texorpdfstring{getCoeffVector()}{getCoeffVector()}}
-{\footnotesize\ttfamily std\+::vector$<$ double $>$ Fir1\+::get\+Coeff\+Vector (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+{\footnotesize\ttfamily std\+::vector$<$double$>$ Fir1\+::get\+Coeff\+Vector (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
 
 Returns the coefficients as a vector \mbox{\Hypertarget{classFir1_ac96ecc1b339b541e0aeab530669bc99c}\label{classFir1_ac96ecc1b339b541e0aeab530669bc99c}} 
 \index{Fir1@{Fir1}!getLearningRate@{getLearningRate}}
@@ -156,7 +156,7 @@ Getting the learning rate for the adaptive filter. \mbox{\Hypertarget{classFir1_
 \doxyparagraph{\texorpdfstring{getTapInputPower()}{getTapInputPower()}}
 {\footnotesize\ttfamily double Fir1\+::get\+Tap\+Input\+Power (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-Returns the power of the of the buffer content\+: sum\+\_\+k buffer\mbox{[}k\mbox{]}$^\wedge$2 which is needed to implement a normalised LMS algorithm. \mbox{\Hypertarget{classFir1_a83f3a1bd1c3c8cc571962c6b561a9e29}\label{classFir1_a83f3a1bd1c3c8cc571962c6b561a9e29}} 
+Returns the power of the of the buffer content\+: sum\+\_\+k buffer\mbox{[}k\mbox{]}$^\wedge$2 which is needed to implement a normalised L\+MS algorithm. \mbox{\Hypertarget{classFir1_a83f3a1bd1c3c8cc571962c6b561a9e29}\label{classFir1_a83f3a1bd1c3c8cc571962c6b561a9e29}} 
 \index{Fir1@{Fir1}!getTaps@{getTaps}}
 \index{getTaps@{getTaps}!Fir1@{Fir1}}
 \doxyparagraph{\texorpdfstring{getTaps()}{getTaps()}}
@@ -168,9 +168,9 @@ Returns the number of taps. \mbox{\Hypertarget{classFir1_ae7dd501b1f452c51944b7c
 \doxyparagraph{\texorpdfstring{lms\_update()}{lms\_update()}}
 {\footnotesize\ttfamily void Fir1\+::lms\+\_\+update (\begin{DoxyParamCaption}\item[{double}]{error }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
-LMS adaptive filter weight update\+: Every filter coefficient is updated with\+: w\+\_\+k(n+1) = w\+\_\+k(n) + learning\+\_\+rate $\ast$ buffer\+\_\+k(n) $\ast$ error(n) 
+L\+MS adaptive filter weight update\+: Every filter coefficient is updated with\+: w\+\_\+k(n+1) = w\+\_\+k(n) + learning\+\_\+rate $\ast$ buffer\+\_\+k(n) $\ast$ error(n) 
 \begin{DoxyParams}{Parameters}
-{\em error} & Is the term error(n), the error which adjusts the FIR conefficients. \\
+{\em error} & Is the term error(n), the error which adjusts the F\+IR conefficients. \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{classFir1_a3516709a67439e6fa1ecd3aac42fd719}\label{classFir1_a3516709a67439e6fa1ecd3aac42fd719}} 

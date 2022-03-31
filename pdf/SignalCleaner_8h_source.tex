@@ -1,0 +1,41 @@
+\hypertarget{SignalCleaner_8h_source}{}\doxysubsection{Signal\+Cleaner.\+h}
+\label{SignalCleaner_8h_source}\index{SignalCleaner/SignalCleaner.h@{SignalCleaner/SignalCleaner.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{//}}
+\DoxyCodeLine{2 \textcolor{comment}{// Created by ross on 08/03/2022.}}
+\DoxyCodeLine{3 \textcolor{comment}{//}}
+\DoxyCodeLine{4 }
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#ifndef FIR1\_SIGNALCLEANER\_H}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#define FIR1\_SIGNALCLEANER\_H}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include <Fir1.h>}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include "{}\mbox{\hyperlink{AudioFile_8h}{AudioFile/AudioFile.h}}"{}}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include <cmath>}}
+\DoxyCodeLine{10 }
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12 \textcolor{keyword}{class }\mbox{\hyperlink{classSignalCleaner}{SignalCleaner}} \{}
+\DoxyCodeLine{13 \textcolor{keyword}{public}:}
+\DoxyCodeLine{14     \mbox{\hyperlink{classAudioFile}{AudioFile<double>}} noisey\_signal;}
+\DoxyCodeLine{15     \mbox{\hyperlink{classAudioFile}{AudioFile<double>}} noise\_source;}
+\DoxyCodeLine{16     \mbox{\hyperlink{classAudioFile}{AudioFile<double>}} output;}
+\DoxyCodeLine{17     \mbox{\hyperlink{classAudioFile}{AudioFile<double>}} clean;}
+\DoxyCodeLine{18 }
+\DoxyCodeLine{19     \mbox{\hyperlink{classSignalCleaner}{SignalCleaner}}(std::string noisey\_signal\_path, std::string noise\_source\_path, \textcolor{keywordtype}{unsigned} nr\_taps, \textcolor{keywordtype}{double} learning\_rate);}
+\DoxyCodeLine{20 }
+\DoxyCodeLine{21     \textcolor{keywordtype}{bool} SaveFiltered(std::string);}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{23     \textcolor{keywordtype}{void} Filter();}
+\DoxyCodeLine{24 }
+\DoxyCodeLine{25     \textcolor{keywordtype}{void} PrintSummaries();}
+\DoxyCodeLine{26 }
+\DoxyCodeLine{27 }
+\DoxyCodeLine{28 \textcolor{keyword}{private}:}
+\DoxyCodeLine{29     Fir1 internal\_fir;}
+\DoxyCodeLine{30 }
+\DoxyCodeLine{31     \textcolor{keywordtype}{bool} FileExists(std::string filename);}
+\DoxyCodeLine{32 \};}
+\DoxyCodeLine{33 }
+\DoxyCodeLine{34 }
+\DoxyCodeLine{35 \textcolor{preprocessor}{\#endif }\textcolor{comment}{//FIR1\_SIGNALCLEANER\_H}}
+
+\end{DoxyCode}

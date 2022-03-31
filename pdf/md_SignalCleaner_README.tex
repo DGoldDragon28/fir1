@@ -1,0 +1,25 @@
+The {\ttfamily signal-\/cleaner} tool may be used to run the lms fir algorithm on a noisey input file and produce a clean output file. The noise source is also required. All inputs are files with {\ttfamily .wav} extenstion.\hypertarget{md_SignalCleaner_README_autotoc_md28}{}\doxysubsection{Build}\label{md_SignalCleaner_README_autotoc_md28}
+To try out {\ttfamily signal-\/cleaner}, you can build the program with {\ttfamily cmake} from the root level {\ttfamily fir/} directory or from this directory as shown\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake .}
+\DoxyCodeLine{make}
+
+\end{DoxyCode}
+\hypertarget{md_SignalCleaner_README_autotoc_md29}{}\doxysubsection{Usage}\label{md_SignalCleaner_README_autotoc_md29}
+A usage example is provided below\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Usage: ./signal-\/cleaner[-\/l <lrate>] [-\/n <ntaps>] [-\/o <file>] <noise-\/source> [<input>]}
+
+\end{DoxyCode}
+
+
+As well as providing input and noise sources, the {\ttfamily ntaps} and {\ttfamily lrate} for the filter may be configured.
+
+If no output file is specified, the program will output to {\ttfamily stdout}.
+
+If no input file is specified, the program will input from {\ttfamily stdin}.\hypertarget{md_SignalCleaner_README_autotoc_md30}{}\doxysubsection{Output}\label{md_SignalCleaner_README_autotoc_md30}
+The output file is the filtered result. 
