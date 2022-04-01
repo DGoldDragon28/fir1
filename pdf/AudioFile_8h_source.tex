@@ -420,838 +420,837 @@
 \DoxyCodeLine{484         file.seekg (0, std::ios::end);}
 \DoxyCodeLine{485         \textcolor{keywordtype}{size\_t} length = file.tellg();}
 \DoxyCodeLine{486         file.seekg (0, std::ios::beg);}
-\DoxyCodeLine{487     std::cout << \textcolor{stringliteral}{"{}len: "{}} << length;}
-\DoxyCodeLine{488         \textcolor{comment}{// allocate}}
-\DoxyCodeLine{489         fileData.resize (length);}
-\DoxyCodeLine{490 }
-\DoxyCodeLine{491         file.read(\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>} (fileData.data()), length);}
-\DoxyCodeLine{492         file.close();}
-\DoxyCodeLine{493 }
-\DoxyCodeLine{494         \textcolor{keywordflow}{if} (file.gcount() != length)}
-\DoxyCodeLine{495         \{}
-\DoxyCodeLine{496                 reportError (\textcolor{stringliteral}{"{}ERROR: Couldn't read entire file\(\backslash\)n"{}} + filePath);}
-\DoxyCodeLine{497                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{498         \}}
-\DoxyCodeLine{499     }
-\DoxyCodeLine{500     \textcolor{keywordflow}{return} loadFromMemory (fileData);}
-\DoxyCodeLine{501 \}}
-\DoxyCodeLine{502 }
-\DoxyCodeLine{503 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{504 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{505 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile_a138cd246abfc23b57caf1519d78b1312}{AudioFile<T>::loadFromMemory}} (std::vector<uint8\_t>\& fileData)}
-\DoxyCodeLine{506 \{}
-\DoxyCodeLine{507     \textcolor{comment}{// get audio file format}}
-\DoxyCodeLine{508     audioFileFormat = determineAudioFileFormat (fileData);}
-\DoxyCodeLine{509     }
-\DoxyCodeLine{510     \textcolor{keywordflow}{if} (audioFileFormat == AudioFileFormat::Wave)}
-\DoxyCodeLine{511     \{}
-\DoxyCodeLine{512         \textcolor{keywordflow}{return} decodeWaveFile (fileData);}
-\DoxyCodeLine{513     \}}
-\DoxyCodeLine{514     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (audioFileFormat == AudioFileFormat::Aiff)}
-\DoxyCodeLine{515     \{}
-\DoxyCodeLine{516         \textcolor{keywordflow}{return} decodeAiffFile (fileData);}
-\DoxyCodeLine{517     \}}
-\DoxyCodeLine{518     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{519     \{}
-\DoxyCodeLine{520         reportError (\textcolor{stringliteral}{"{}Audio File Type: Error"{}});}
-\DoxyCodeLine{521         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{522     \}}
-\DoxyCodeLine{523 \}}
-\DoxyCodeLine{524 }
-\DoxyCodeLine{525 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{526 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{527 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::decodeWaveFile}} (std::vector<uint8\_t>\& fileData)}
-\DoxyCodeLine{528 \{}
-\DoxyCodeLine{529     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{530     \textcolor{comment}{// HEADER CHUNK}}
-\DoxyCodeLine{531     std::string headerChunkID (fileData.begin(), fileData.begin() + 4);}
-\DoxyCodeLine{532     \textcolor{comment}{//int32\_t fileSizeInBytes = fourBytesToInt (fileData, 4) + 8;}}
-\DoxyCodeLine{533     std::string format (fileData.begin() + 8, fileData.begin() + 12);}
-\DoxyCodeLine{534     }
-\DoxyCodeLine{535     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{536     \textcolor{comment}{// try and find the start points of key chunks}}
-\DoxyCodeLine{537     \textcolor{keywordtype}{int} indexOfDataChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}data"{}}, 12);}
-\DoxyCodeLine{538     \textcolor{keywordtype}{int} indexOfFormatChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}fmt "{}}, 12);}
-\DoxyCodeLine{539     \textcolor{keywordtype}{int} indexOfXMLChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}iXML"{}}, 12);}
-\DoxyCodeLine{540     }
-\DoxyCodeLine{541     \textcolor{comment}{// if we can't find the data or format chunks, or the IDs/formats don't seem to be as expected}}
-\DoxyCodeLine{542     \textcolor{comment}{// then it is unlikely we'll able to read this file, so abort}}
-\DoxyCodeLine{543     \textcolor{keywordflow}{if} (indexOfDataChunk == -\/1 || indexOfFormatChunk == -\/1 || headerChunkID != \textcolor{stringliteral}{"{}RIFF"{}} || format != \textcolor{stringliteral}{"{}WAVE"{}})}
-\DoxyCodeLine{544     \{}
-\DoxyCodeLine{545         reportError (\textcolor{stringliteral}{"{}ERROR: this doesn't seem to be a valid .WAV file"{}});}
-\DoxyCodeLine{546         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{547     \}}
-\DoxyCodeLine{548     }
-\DoxyCodeLine{549     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{550     \textcolor{comment}{// FORMAT CHUNK}}
-\DoxyCodeLine{551     \textcolor{keywordtype}{int} f = indexOfFormatChunk;}
-\DoxyCodeLine{552     std::string formatChunkID (fileData.begin() + f, fileData.begin() + f + 4);}
-\DoxyCodeLine{553     \textcolor{comment}{//int32\_t formatChunkSize = fourBytesToInt (fileData, f + 4);}}
-\DoxyCodeLine{554     uint16\_t audioFormat = twoBytesToInt (fileData, f + 8);}
-\DoxyCodeLine{555     uint16\_t numChannels = twoBytesToInt (fileData, f + 10);}
-\DoxyCodeLine{556     sampleRate = (uint32\_t) fourBytesToInt (fileData, f + 12);}
-\DoxyCodeLine{557     uint32\_t numBytesPerSecond = fourBytesToInt (fileData, f + 16);}
-\DoxyCodeLine{558     uint16\_t numBytesPerBlock = twoBytesToInt (fileData, f + 20);}
-\DoxyCodeLine{559     bitDepth = (int) twoBytesToInt (fileData, f + 22);}
-\DoxyCodeLine{560     }
-\DoxyCodeLine{561     uint16\_t numBytesPerSample = \textcolor{keyword}{static\_cast<}uint16\_t\textcolor{keyword}{>} (bitDepth) / 8;}
-\DoxyCodeLine{562     }
-\DoxyCodeLine{563     \textcolor{comment}{// check that the audio format is PCM or Float or extensible}}
-\DoxyCodeLine{564     \textcolor{keywordflow}{if} (audioFormat != WavAudioFormat::PCM \&\& audioFormat != WavAudioFormat::IEEEFloat \&\& audioFormat != WavAudioFormat::Extensible)}
-\DoxyCodeLine{565     \{}
-\DoxyCodeLine{566         reportError (\textcolor{stringliteral}{"{}ERROR: this .WAV file is encoded in a format that this library does not support at present"{}});}
-\DoxyCodeLine{567         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{568     \}}
-\DoxyCodeLine{569     }
-\DoxyCodeLine{570     \textcolor{comment}{// check the number of channels is mono or stereo}}
-\DoxyCodeLine{571     \textcolor{keywordflow}{if} (numChannels < 1 || numChannels > 128)}
-\DoxyCodeLine{572     \{}
-\DoxyCodeLine{573         reportError (\textcolor{stringliteral}{"{}ERROR: this WAV file seems to be an invalid number of channels (or corrupted?)"{}});}
-\DoxyCodeLine{574         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{575     \}}
-\DoxyCodeLine{576     }
-\DoxyCodeLine{577     \textcolor{comment}{// check header data is consistent}}
-\DoxyCodeLine{578     \textcolor{keywordflow}{if} (numBytesPerSecond != \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>} ((numChannels * sampleRate * bitDepth) / 8) || numBytesPerBlock != (numChannels * numBytesPerSample))}
-\DoxyCodeLine{579     \{}
-\DoxyCodeLine{580         reportError (\textcolor{stringliteral}{"{}ERROR: the header data in this WAV file seems to be inconsistent"{}});}
-\DoxyCodeLine{581         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{582     \}}
-\DoxyCodeLine{583     }
-\DoxyCodeLine{584     \textcolor{comment}{// check bit depth is either 8, 16, 24 or 32 bit}}
-\DoxyCodeLine{585     \textcolor{keywordflow}{if} (bitDepth != 8 \&\& bitDepth != 16 \&\& bitDepth != 24 \&\& bitDepth != 32)}
-\DoxyCodeLine{586     \{}
-\DoxyCodeLine{587         reportError (\textcolor{stringliteral}{"{}ERROR: this file has a bit depth that is not 8, 16, 24 or 32 bits"{}});}
-\DoxyCodeLine{588         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{589     \}}
-\DoxyCodeLine{590     }
-\DoxyCodeLine{591     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{592     \textcolor{comment}{// DATA CHUNK}}
-\DoxyCodeLine{593     \textcolor{keywordtype}{int} d = indexOfDataChunk;}
-\DoxyCodeLine{594     std::string dataChunkID (fileData.begin() + d, fileData.begin() + d + 4);}
-\DoxyCodeLine{595     int32\_t dataChunkSize = fourBytesToInt (fileData, d + 4);}
-\DoxyCodeLine{596     }
-\DoxyCodeLine{597     \textcolor{keywordtype}{int} numSamples = dataChunkSize / (numChannels * bitDepth / 8);}
-\DoxyCodeLine{598     \textcolor{keywordtype}{int} samplesStartIndex = indexOfDataChunk + 8;}
-\DoxyCodeLine{599     }
-\DoxyCodeLine{600     clearAudioBuffer();}
-\DoxyCodeLine{601     samples.resize (numChannels);}
-\DoxyCodeLine{602     }
-\DoxyCodeLine{603     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < numSamples; i++)}
-\DoxyCodeLine{604     \{}
-\DoxyCodeLine{605         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < numChannels; channel++)}
-\DoxyCodeLine{606         \{}
-\DoxyCodeLine{607             \textcolor{keywordtype}{int} sampleIndex = samplesStartIndex + (numBytesPerBlock * i) + channel * numBytesPerSample;}
-\DoxyCodeLine{608             }
-\DoxyCodeLine{609             \textcolor{keywordflow}{if} ((sampleIndex + (bitDepth / 8) -\/ 1) >= fileData.size())}
-\DoxyCodeLine{610             \{}
-\DoxyCodeLine{611                 reportError (\textcolor{stringliteral}{"{}ERROR: read file error as the metadata indicates more samples than there are in the file data"{}});}
-\DoxyCodeLine{612                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{613             \}}
-\DoxyCodeLine{614             }
-\DoxyCodeLine{615             \textcolor{keywordflow}{if} (bitDepth == 8)}
-\DoxyCodeLine{616             \{}
-\DoxyCodeLine{617                 T sample = singleByteToSample (fileData[sampleIndex]);}
-\DoxyCodeLine{618                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{619             \}}
-\DoxyCodeLine{620             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
-\DoxyCodeLine{621             \{}
-\DoxyCodeLine{622                 int16\_t sampleAsInt = twoBytesToInt (fileData, sampleIndex);}
-\DoxyCodeLine{623                 T sample = sixteenBitIntToSample (sampleAsInt);}
-\DoxyCodeLine{624                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{625             \}}
-\DoxyCodeLine{626             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
-\DoxyCodeLine{627             \{}
-\DoxyCodeLine{628                 int32\_t sampleAsInt = 0;}
-\DoxyCodeLine{629                 sampleAsInt = (fileData[sampleIndex + 2] << 16) | (fileData[sampleIndex + 1] << 8) | fileData[sampleIndex];}
-\DoxyCodeLine{630                 }
-\DoxyCodeLine{631                 \textcolor{keywordflow}{if} (sampleAsInt \& 0x800000) \textcolor{comment}{//  if the 24th bit is set, this is a negative number in 24-\/bit world}}
-\DoxyCodeLine{632                     sampleAsInt = sampleAsInt | \string~0xFFFFFF; \textcolor{comment}{// so make sure sign is extended to the 32 bit float}}
-\DoxyCodeLine{633 }
-\DoxyCodeLine{634                 T sample = (T)sampleAsInt / (T)8388608.;}
-\DoxyCodeLine{635                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{636             \}}
-\DoxyCodeLine{637             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
-\DoxyCodeLine{638             \{}
-\DoxyCodeLine{639                 int32\_t sampleAsInt = fourBytesToInt (fileData, sampleIndex);}
-\DoxyCodeLine{640                 T sample;}
-\DoxyCodeLine{641                 }
-\DoxyCodeLine{642                 \textcolor{keywordflow}{if} (audioFormat == WavAudioFormat::IEEEFloat)}
-\DoxyCodeLine{643                     sample = (T)\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{float}\&\textcolor{keyword}{>} (sampleAsInt);}
-\DoxyCodeLine{644                 \textcolor{keywordflow}{else} \textcolor{comment}{// assume PCM}}
-\DoxyCodeLine{645                     sample = (T) sampleAsInt / \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>} (std::numeric\_limits<std::int32\_t>::max());}
-\DoxyCodeLine{646                 }
-\DoxyCodeLine{647                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{648             \}}
-\DoxyCodeLine{649             \textcolor{keywordflow}{else}}
-\DoxyCodeLine{650             \{}
-\DoxyCodeLine{651                 assert (\textcolor{keyword}{false});}
-\DoxyCodeLine{652             \}}
-\DoxyCodeLine{653         \}}
-\DoxyCodeLine{654     \}}
-\DoxyCodeLine{655 }
-\DoxyCodeLine{656     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{657     \textcolor{comment}{// iXML CHUNK}}
-\DoxyCodeLine{658     \textcolor{keywordflow}{if} (indexOfXMLChunk != -\/1)}
-\DoxyCodeLine{659     \{}
-\DoxyCodeLine{660         int32\_t chunkSize = fourBytesToInt (fileData, indexOfXMLChunk + 4);}
-\DoxyCodeLine{661         iXMLChunk = std::string ((\textcolor{keyword}{const} \textcolor{keywordtype}{char}*) \&fileData[indexOfXMLChunk + 8], chunkSize);}
-\DoxyCodeLine{662     \}}
-\DoxyCodeLine{663 }
-\DoxyCodeLine{664     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{665 \}}
-\DoxyCodeLine{666 }
-\DoxyCodeLine{667 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{668 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{669 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::decodeAiffFile}} (std::vector<uint8\_t>\& fileData)}
-\DoxyCodeLine{670 \{}
-\DoxyCodeLine{671     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{672     \textcolor{comment}{// HEADER CHUNK}}
-\DoxyCodeLine{673     std::string headerChunkID (fileData.begin(), fileData.begin() + 4);}
-\DoxyCodeLine{674     \textcolor{comment}{//int32\_t fileSizeInBytes = fourBytesToInt (fileData, 4, Endianness::BigEndian) + 8;}}
-\DoxyCodeLine{675     std::string format (fileData.begin() + 8, fileData.begin() + 12);}
-\DoxyCodeLine{676     }
-\DoxyCodeLine{677     \textcolor{keywordtype}{int} audioFormat = format == \textcolor{stringliteral}{"{}AIFF"{}} ? AIFFAudioFormat::Uncompressed : format == \textcolor{stringliteral}{"{}AIFC"{}} ? AIFFAudioFormat::Compressed : AIFFAudioFormat::Error;}
-\DoxyCodeLine{678     }
-\DoxyCodeLine{679     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{680     \textcolor{comment}{// try and find the start points of key chunks}}
-\DoxyCodeLine{681     \textcolor{keywordtype}{int} indexOfCommChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}COMM"{}}, 12, Endianness::BigEndian);}
-\DoxyCodeLine{682     \textcolor{keywordtype}{int} indexOfSoundDataChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}SSND"{}}, 12, Endianness::BigEndian);}
-\DoxyCodeLine{683     \textcolor{keywordtype}{int} indexOfXMLChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}iXML"{}}, 12, Endianness::BigEndian);}
-\DoxyCodeLine{684     }
-\DoxyCodeLine{685     \textcolor{comment}{// if we can't find the data or format chunks, or the IDs/formats don't seem to be as expected}}
-\DoxyCodeLine{686     \textcolor{comment}{// then it is unlikely we'll able to read this file, so abort}}
-\DoxyCodeLine{687     \textcolor{keywordflow}{if} (indexOfSoundDataChunk == -\/1 || indexOfCommChunk == -\/1 || headerChunkID != \textcolor{stringliteral}{"{}FORM"{}} || audioFormat == AIFFAudioFormat::Error)}
-\DoxyCodeLine{688     \{}
-\DoxyCodeLine{689         reportError (\textcolor{stringliteral}{"{}ERROR: this doesn't seem to be a valid AIFF file"{}});}
-\DoxyCodeLine{690         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{691     \}}
-\DoxyCodeLine{692 }
-\DoxyCodeLine{693     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{694     \textcolor{comment}{// COMM CHUNK}}
-\DoxyCodeLine{695     \textcolor{keywordtype}{int} p = indexOfCommChunk;}
-\DoxyCodeLine{696     std::string commChunkID (fileData.begin() + p, fileData.begin() + p + 4);}
-\DoxyCodeLine{697     \textcolor{comment}{//int32\_t commChunkSize = fourBytesToInt (fileData, p + 4, Endianness::BigEndian);}}
-\DoxyCodeLine{698     int16\_t numChannels = twoBytesToInt (fileData, p + 8, Endianness::BigEndian);}
-\DoxyCodeLine{699     int32\_t numSamplesPerChannel = fourBytesToInt (fileData, p + 10, Endianness::BigEndian);}
-\DoxyCodeLine{700     bitDepth = (int) twoBytesToInt (fileData, p + 14, Endianness::BigEndian);}
-\DoxyCodeLine{701     sampleRate = getAiffSampleRate (fileData, p + 16);}
-\DoxyCodeLine{702     }
-\DoxyCodeLine{703     \textcolor{comment}{// check the sample rate was properly decoded}}
-\DoxyCodeLine{704     \textcolor{keywordflow}{if} (sampleRate == 0)}
-\DoxyCodeLine{705     \{}
-\DoxyCodeLine{706         reportError (\textcolor{stringliteral}{"{}ERROR: this AIFF file has an unsupported sample rate"{}});}
-\DoxyCodeLine{707         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{708     \}}
-\DoxyCodeLine{709     }
-\DoxyCodeLine{710     \textcolor{comment}{// check the number of channels is mono or stereo}}
-\DoxyCodeLine{711     \textcolor{keywordflow}{if} (numChannels < 1 ||numChannels > 2)}
-\DoxyCodeLine{712     \{}
-\DoxyCodeLine{713         reportError (\textcolor{stringliteral}{"{}ERROR: this AIFF file seems to be neither mono nor stereo (perhaps multi-\/track, or corrupted?)"{}});}
-\DoxyCodeLine{714         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{715     \}}
-\DoxyCodeLine{716     }
-\DoxyCodeLine{717     \textcolor{comment}{// check bit depth is either 8, 16, 24 or 32-\/bit}}
-\DoxyCodeLine{718     \textcolor{keywordflow}{if} (bitDepth != 8 \&\& bitDepth != 16 \&\& bitDepth != 24 \&\& bitDepth != 32)}
-\DoxyCodeLine{719     \{}
-\DoxyCodeLine{720         reportError (\textcolor{stringliteral}{"{}ERROR: this file has a bit depth that is not 8, 16, 24 or 32 bits"{}});}
-\DoxyCodeLine{721         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{722     \}}
-\DoxyCodeLine{723     }
-\DoxyCodeLine{724     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{725     \textcolor{comment}{// SSND CHUNK}}
-\DoxyCodeLine{726     \textcolor{keywordtype}{int} s = indexOfSoundDataChunk;}
-\DoxyCodeLine{727     std::string soundDataChunkID (fileData.begin() + s, fileData.begin() + s + 4);}
-\DoxyCodeLine{728     int32\_t soundDataChunkSize = fourBytesToInt (fileData, s + 4, Endianness::BigEndian);}
-\DoxyCodeLine{729     int32\_t offset = fourBytesToInt (fileData, s + 8, Endianness::BigEndian);}
-\DoxyCodeLine{730     \textcolor{comment}{//int32\_t blockSize = fourBytesToInt (fileData, s + 12, Endianness::BigEndian);}}
-\DoxyCodeLine{731     }
-\DoxyCodeLine{732     \textcolor{keywordtype}{int} numBytesPerSample = bitDepth / 8;}
-\DoxyCodeLine{733     \textcolor{keywordtype}{int} numBytesPerFrame = numBytesPerSample * numChannels;}
-\DoxyCodeLine{734     \textcolor{keywordtype}{int} totalNumAudioSampleBytes = numSamplesPerChannel * numBytesPerFrame;}
-\DoxyCodeLine{735     \textcolor{keywordtype}{int} samplesStartIndex = s + 16 + (int)offset;}
-\DoxyCodeLine{736         }
-\DoxyCodeLine{737     \textcolor{comment}{// sanity check the data}}
-\DoxyCodeLine{738     \textcolor{keywordflow}{if} ((soundDataChunkSize -\/ 8) != totalNumAudioSampleBytes || totalNumAudioSampleBytes > \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{long}\textcolor{keyword}{>}(fileData.size() -\/ samplesStartIndex))}
-\DoxyCodeLine{739     \{}
-\DoxyCodeLine{740         reportError (\textcolor{stringliteral}{"{}ERROR: the metadatafor this file doesn't seem right"{}});}
-\DoxyCodeLine{741         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{742     \}}
-\DoxyCodeLine{743     }
-\DoxyCodeLine{744     clearAudioBuffer();}
-\DoxyCodeLine{745     samples.resize (numChannels);}
-\DoxyCodeLine{746     }
-\DoxyCodeLine{747     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < numSamplesPerChannel; i++)}
-\DoxyCodeLine{748     \{}
-\DoxyCodeLine{749         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < numChannels; channel++)}
-\DoxyCodeLine{750         \{}
-\DoxyCodeLine{751             \textcolor{keywordtype}{int} sampleIndex = samplesStartIndex + (numBytesPerFrame * i) + channel * numBytesPerSample;}
-\DoxyCodeLine{752             }
-\DoxyCodeLine{753             \textcolor{keywordflow}{if} ((sampleIndex + (bitDepth / 8) -\/ 1) >= fileData.size())}
-\DoxyCodeLine{754             \{}
-\DoxyCodeLine{755                 reportError (\textcolor{stringliteral}{"{}ERROR: read file error as the metadata indicates more samples than there are in the file data"{}});}
-\DoxyCodeLine{756                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{757             \}}
-\DoxyCodeLine{758             }
-\DoxyCodeLine{759             \textcolor{keywordflow}{if} (bitDepth == 8)}
-\DoxyCodeLine{760             \{}
-\DoxyCodeLine{761                 int8\_t sampleAsSigned8Bit = (int8\_t)fileData[sampleIndex];}
-\DoxyCodeLine{762                 T sample = (T)sampleAsSigned8Bit / (T)128.;}
-\DoxyCodeLine{763                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{764             \}}
-\DoxyCodeLine{765             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
-\DoxyCodeLine{766             \{}
-\DoxyCodeLine{767                 int16\_t sampleAsInt = twoBytesToInt (fileData, sampleIndex, Endianness::BigEndian);}
-\DoxyCodeLine{768                 T sample = sixteenBitIntToSample (sampleAsInt);}
-\DoxyCodeLine{769                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{770             \}}
-\DoxyCodeLine{771             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
-\DoxyCodeLine{772             \{}
-\DoxyCodeLine{773                 int32\_t sampleAsInt = 0;}
-\DoxyCodeLine{774                 sampleAsInt = (fileData[sampleIndex] << 16) | (fileData[sampleIndex + 1] << 8) | fileData[sampleIndex + 2];}
-\DoxyCodeLine{775                 }
-\DoxyCodeLine{776                 \textcolor{keywordflow}{if} (sampleAsInt \& 0x800000) \textcolor{comment}{//  if the 24th bit is set, this is a negative number in 24-\/bit world}}
-\DoxyCodeLine{777                     sampleAsInt = sampleAsInt | \string~0xFFFFFF; \textcolor{comment}{// so make sure sign is extended to the 32 bit float}}
-\DoxyCodeLine{778                 }
-\DoxyCodeLine{779                 T sample = (T)sampleAsInt / (T)8388608.;}
-\DoxyCodeLine{780                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{781             \}}
-\DoxyCodeLine{782             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
-\DoxyCodeLine{783             \{}
-\DoxyCodeLine{784                 int32\_t sampleAsInt = fourBytesToInt (fileData, sampleIndex, Endianness::BigEndian);}
-\DoxyCodeLine{785                 T sample;}
-\DoxyCodeLine{786                 }
-\DoxyCodeLine{787                 \textcolor{keywordflow}{if} (audioFormat == AIFFAudioFormat::Compressed)}
-\DoxyCodeLine{788                     sample = (T)\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{float}\&\textcolor{keyword}{>} (sampleAsInt);}
-\DoxyCodeLine{789                 \textcolor{keywordflow}{else} \textcolor{comment}{// assume uncompressed}}
-\DoxyCodeLine{790                     sample = (T) sampleAsInt / \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>} (std::numeric\_limits<std::int32\_t>::max());}
-\DoxyCodeLine{791                     }
-\DoxyCodeLine{792                 samples[channel].push\_back (sample);}
-\DoxyCodeLine{793             \}}
-\DoxyCodeLine{794             \textcolor{keywordflow}{else}}
-\DoxyCodeLine{795             \{}
-\DoxyCodeLine{796                 assert (\textcolor{keyword}{false});}
-\DoxyCodeLine{797             \}}
-\DoxyCodeLine{798         \}}
-\DoxyCodeLine{799     \}}
-\DoxyCodeLine{800 }
-\DoxyCodeLine{801     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{802     \textcolor{comment}{// iXML CHUNK}}
-\DoxyCodeLine{803     \textcolor{keywordflow}{if} (indexOfXMLChunk != -\/1)}
-\DoxyCodeLine{804     \{}
-\DoxyCodeLine{805         int32\_t chunkSize = fourBytesToInt (fileData, indexOfXMLChunk + 4);}
-\DoxyCodeLine{806         iXMLChunk = std::string ((\textcolor{keyword}{const} \textcolor{keywordtype}{char}*) \&fileData[indexOfXMLChunk + 8], chunkSize);}
-\DoxyCodeLine{807     \}}
-\DoxyCodeLine{808     }
-\DoxyCodeLine{809     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{810 \}}
-\DoxyCodeLine{811 }
-\DoxyCodeLine{812 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{813 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{814 uint32\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::getAiffSampleRate}} (std::vector<uint8\_t>\& fileData, \textcolor{keywordtype}{int} sampleRateStartIndex)}
-\DoxyCodeLine{815 \{}
-\DoxyCodeLine{816     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} it : aiffSampleRateTable)}
-\DoxyCodeLine{817     \{}
-\DoxyCodeLine{818         \textcolor{keywordflow}{if} (tenByteMatch (fileData, sampleRateStartIndex, it.second, 0))}
-\DoxyCodeLine{819             \textcolor{keywordflow}{return} it.first;}
-\DoxyCodeLine{820     \}}
-\DoxyCodeLine{821     }
-\DoxyCodeLine{822     \textcolor{keywordflow}{return} 0;}
-\DoxyCodeLine{823 \}}
-\DoxyCodeLine{824 }
-\DoxyCodeLine{825 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{826 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{827 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::tenByteMatch}} (std::vector<uint8\_t>\& v1, \textcolor{keywordtype}{int} startIndex1, std::vector<uint8\_t>\& v2, \textcolor{keywordtype}{int} startIndex2)}
-\DoxyCodeLine{828 \{}
-\DoxyCodeLine{829     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 10; i++)}
-\DoxyCodeLine{830     \{}
-\DoxyCodeLine{831         \textcolor{keywordflow}{if} (v1[startIndex1 + i] != v2[startIndex2 + i])}
-\DoxyCodeLine{832             \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{833     \}}
-\DoxyCodeLine{834     }
-\DoxyCodeLine{835     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{836 \}}
-\DoxyCodeLine{837 }
-\DoxyCodeLine{838 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{839 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{840 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addSampleRateToAiffData}} (std::vector<uint8\_t>\& fileData, uint32\_t sampleRate)}
-\DoxyCodeLine{841 \{}
-\DoxyCodeLine{842     \textcolor{keywordflow}{if} (aiffSampleRateTable.count (sampleRate) > 0)}
-\DoxyCodeLine{843     \{}
-\DoxyCodeLine{844         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 10; i++)}
-\DoxyCodeLine{845             fileData.push\_back (aiffSampleRateTable[sampleRate][i]);}
-\DoxyCodeLine{846     \}}
-\DoxyCodeLine{847 \}}
-\DoxyCodeLine{848 }
-\DoxyCodeLine{849 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{850 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{851 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile_a415239cad5b54b4fef4a210ab79911e3}{AudioFile<T>::save}} (std::string filePath, \mbox{\hyperlink{AudioFile_8h_ad18559d169602e85d0ad68da6ef8593f}{AudioFileFormat}} format)}
-\DoxyCodeLine{852 \{}
-\DoxyCodeLine{853     \textcolor{keywordflow}{if} (format == AudioFileFormat::Wave)}
-\DoxyCodeLine{854     \{}
-\DoxyCodeLine{855         \textcolor{keywordflow}{return} saveToWaveFile (filePath);}
-\DoxyCodeLine{856     \}}
-\DoxyCodeLine{857     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (format == AudioFileFormat::Aiff)}
-\DoxyCodeLine{858     \{}
-\DoxyCodeLine{859         \textcolor{keywordflow}{return} saveToAiffFile (filePath);}
-\DoxyCodeLine{860     \}}
-\DoxyCodeLine{861     }
-\DoxyCodeLine{862     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{863 \}}
-\DoxyCodeLine{864 }
-\DoxyCodeLine{865 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{866 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{867 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::saveToWaveFile}} (std::string filePath)}
-\DoxyCodeLine{868 \{}
-\DoxyCodeLine{869     std::vector<uint8\_t> fileData;}
-\DoxyCodeLine{870     }
-\DoxyCodeLine{871     int32\_t dataChunkSize = getNumSamplesPerChannel() * (getNumChannels() * bitDepth / 8);}
-\DoxyCodeLine{872     int16\_t audioFormat = bitDepth == 32 ? WavAudioFormat::IEEEFloat : WavAudioFormat::PCM;}
-\DoxyCodeLine{873     int32\_t formatChunkSize = audioFormat == WavAudioFormat::PCM ? 16 : 18;}
-\DoxyCodeLine{874     int32\_t iXMLChunkSize = \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (iXMLChunk.size());}
-\DoxyCodeLine{875     }
-\DoxyCodeLine{876     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{877     \textcolor{comment}{// HEADER CHUNK}}
-\DoxyCodeLine{878     addStringToFileData (fileData, \textcolor{stringliteral}{"{}RIFF"{}});}
-\DoxyCodeLine{879     }
-\DoxyCodeLine{880     \textcolor{comment}{// The file size in bytes is the header chunk size (4, not counting RIFF and WAVE) + the format}}
-\DoxyCodeLine{881     \textcolor{comment}{// chunk size (24) + the metadata part of the data chunk plus the actual data chunk size}}
-\DoxyCodeLine{882     int32\_t fileSizeInBytes = 4 + formatChunkSize + 8 + 8 + dataChunkSize;}
-\DoxyCodeLine{883     \textcolor{keywordflow}{if} (iXMLChunkSize > 0)}
-\DoxyCodeLine{884     \{}
-\DoxyCodeLine{885         fileSizeInBytes += (8 + iXMLChunkSize);}
-\DoxyCodeLine{886     \}}
-\DoxyCodeLine{887 }
-\DoxyCodeLine{888     addInt32ToFileData (fileData, fileSizeInBytes);}
-\DoxyCodeLine{889     }
-\DoxyCodeLine{890     addStringToFileData (fileData, \textcolor{stringliteral}{"{}WAVE"{}});}
-\DoxyCodeLine{891     }
-\DoxyCodeLine{892     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{893     \textcolor{comment}{// FORMAT CHUNK}}
-\DoxyCodeLine{894     addStringToFileData (fileData, \textcolor{stringliteral}{"{}fmt "{}});}
-\DoxyCodeLine{895     addInt32ToFileData (fileData, formatChunkSize); \textcolor{comment}{// format chunk size (16 for PCM)}}
-\DoxyCodeLine{896     addInt16ToFileData (fileData, audioFormat); \textcolor{comment}{// audio format}}
-\DoxyCodeLine{897     addInt16ToFileData (fileData, (int16\_t)getNumChannels()); \textcolor{comment}{// num channels}}
-\DoxyCodeLine{898     addInt32ToFileData (fileData, (int32\_t)sampleRate); \textcolor{comment}{// sample rate}}
-\DoxyCodeLine{899     }
-\DoxyCodeLine{900     int32\_t numBytesPerSecond = (int32\_t) ((getNumChannels() * sampleRate * bitDepth) / 8);}
-\DoxyCodeLine{901     addInt32ToFileData (fileData, numBytesPerSecond);}
-\DoxyCodeLine{902     }
-\DoxyCodeLine{903     int16\_t numBytesPerBlock = getNumChannels() * (bitDepth / 8);}
-\DoxyCodeLine{904     addInt16ToFileData (fileData, numBytesPerBlock);}
-\DoxyCodeLine{905     }
-\DoxyCodeLine{906     addInt16ToFileData (fileData, (int16\_t)bitDepth);}
-\DoxyCodeLine{907     }
-\DoxyCodeLine{908     \textcolor{keywordflow}{if} (audioFormat == WavAudioFormat::IEEEFloat)}
-\DoxyCodeLine{909         addInt16ToFileData (fileData, 0); \textcolor{comment}{// extension size}}
-\DoxyCodeLine{910     }
-\DoxyCodeLine{911     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{912     \textcolor{comment}{// DATA CHUNK}}
-\DoxyCodeLine{913     addStringToFileData (fileData, \textcolor{stringliteral}{"{}data"{}});}
-\DoxyCodeLine{914     addInt32ToFileData (fileData, dataChunkSize);}
-\DoxyCodeLine{915     }
-\DoxyCodeLine{916     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < getNumSamplesPerChannel(); i++)}
-\DoxyCodeLine{917     \{}
-\DoxyCodeLine{918         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < getNumChannels(); channel++)}
-\DoxyCodeLine{919         \{}
-\DoxyCodeLine{920             \textcolor{keywordflow}{if} (bitDepth == 8)}
-\DoxyCodeLine{921             \{}
-\DoxyCodeLine{922                 uint8\_t \textcolor{keywordtype}{byte} = sampleToSingleByte (samples[channel][i]);}
-\DoxyCodeLine{923                 fileData.push\_back (\textcolor{keywordtype}{byte});}
-\DoxyCodeLine{924             \}}
-\DoxyCodeLine{925             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
-\DoxyCodeLine{926             \{}
-\DoxyCodeLine{927                 int16\_t sampleAsInt = sampleToSixteenBitInt (samples[channel][i]);}
-\DoxyCodeLine{928                 addInt16ToFileData (fileData, sampleAsInt);}
-\DoxyCodeLine{929             \}}
-\DoxyCodeLine{930             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
-\DoxyCodeLine{931             \{}
-\DoxyCodeLine{932                 int32\_t sampleAsIntAgain = (int32\_t) (samples[channel][i] * (T)8388608.);}
-\DoxyCodeLine{933                 }
-\DoxyCodeLine{934                 uint8\_t bytes[3];}
-\DoxyCodeLine{935                 bytes[2] = (uint8\_t) (sampleAsIntAgain >> 16) \& 0xFF;}
-\DoxyCodeLine{936                 bytes[1] = (uint8\_t) (sampleAsIntAgain >>  8) \& 0xFF;}
-\DoxyCodeLine{937                 bytes[0] = (uint8\_t) sampleAsIntAgain \& 0xFF;}
-\DoxyCodeLine{938                 }
-\DoxyCodeLine{939                 fileData.push\_back (bytes[0]);}
-\DoxyCodeLine{940                 fileData.push\_back (bytes[1]);}
-\DoxyCodeLine{941                 fileData.push\_back (bytes[2]);}
-\DoxyCodeLine{942             \}}
-\DoxyCodeLine{943             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
-\DoxyCodeLine{944             \{}
-\DoxyCodeLine{945                 int32\_t sampleAsInt;}
-\DoxyCodeLine{946                 }
-\DoxyCodeLine{947                 \textcolor{keywordflow}{if} (audioFormat == WavAudioFormat::IEEEFloat)}
-\DoxyCodeLine{948                     sampleAsInt = (int32\_t) \textcolor{keyword}{reinterpret\_cast<}int32\_t\&\textcolor{keyword}{>} (samples[channel][i]);}
-\DoxyCodeLine{949                 \textcolor{keywordflow}{else} \textcolor{comment}{// assume PCM}}
-\DoxyCodeLine{950                     sampleAsInt = (int32\_t) (samples[channel][i] * std::numeric\_limits<int32\_t>::max());}
-\DoxyCodeLine{951                 }
-\DoxyCodeLine{952                 addInt32ToFileData (fileData, sampleAsInt, Endianness::LittleEndian);}
-\DoxyCodeLine{953             \}}
-\DoxyCodeLine{954             \textcolor{keywordflow}{else}}
-\DoxyCodeLine{955             \{}
-\DoxyCodeLine{956                 assert (\textcolor{keyword}{false} \&\& \textcolor{stringliteral}{"{}Trying to write a file with unsupported bit depth"{}});}
-\DoxyCodeLine{957                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{958             \}}
-\DoxyCodeLine{959         \}}
-\DoxyCodeLine{960     \}}
-\DoxyCodeLine{961     }
-\DoxyCodeLine{962     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{963     \textcolor{comment}{// iXML CHUNK}}
-\DoxyCodeLine{964     \textcolor{keywordflow}{if} (iXMLChunkSize > 0) }
-\DoxyCodeLine{965     \{}
-\DoxyCodeLine{966         addStringToFileData (fileData, \textcolor{stringliteral}{"{}iXML"{}});}
-\DoxyCodeLine{967         addInt32ToFileData (fileData, iXMLChunkSize);}
-\DoxyCodeLine{968         addStringToFileData (fileData, iXMLChunk);}
-\DoxyCodeLine{969     \}}
-\DoxyCodeLine{970     }
-\DoxyCodeLine{971     \textcolor{comment}{// check that the various sizes we put in the metadata are correct}}
-\DoxyCodeLine{972     \textcolor{keywordflow}{if} (fileSizeInBytes != \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (fileData.size() -\/ 8) || dataChunkSize != (getNumSamplesPerChannel() * getNumChannels() * (bitDepth / 8)))}
-\DoxyCodeLine{973     \{}
-\DoxyCodeLine{974         reportError (\textcolor{stringliteral}{"{}ERROR: couldn't save file to "{}} + filePath);}
-\DoxyCodeLine{975         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{976     \}}
-\DoxyCodeLine{977     }
-\DoxyCodeLine{978     \textcolor{comment}{// try to write the file}}
-\DoxyCodeLine{979     \textcolor{keywordflow}{return} writeDataToFile (fileData, filePath);}
-\DoxyCodeLine{980 \}}
-\DoxyCodeLine{981 }
-\DoxyCodeLine{982 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{983 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{984 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::saveToAiffFile}} (std::string filePath)}
-\DoxyCodeLine{985 \{}
-\DoxyCodeLine{986     std::vector<uint8\_t> fileData;}
-\DoxyCodeLine{987     }
-\DoxyCodeLine{988     int32\_t numBytesPerSample = bitDepth / 8;}
-\DoxyCodeLine{989     int32\_t numBytesPerFrame = numBytesPerSample * getNumChannels();}
-\DoxyCodeLine{990     int32\_t totalNumAudioSampleBytes = getNumSamplesPerChannel() * numBytesPerFrame;}
-\DoxyCodeLine{991     int32\_t soundDataChunkSize = totalNumAudioSampleBytes + 8;}
-\DoxyCodeLine{992     int32\_t iXMLChunkSize = \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (iXMLChunk.size());}
-\DoxyCodeLine{993     }
-\DoxyCodeLine{994     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{995     \textcolor{comment}{// HEADER CHUNK}}
-\DoxyCodeLine{996     addStringToFileData (fileData, \textcolor{stringliteral}{"{}FORM"{}});}
-\DoxyCodeLine{997     }
-\DoxyCodeLine{998     \textcolor{comment}{// The file size in bytes is the header chunk size (4, not counting FORM and AIFF) + the COMM}}
-\DoxyCodeLine{999     \textcolor{comment}{// chunk size (26) + the metadata part of the SSND chunk plus the actual data chunk size}}
-\DoxyCodeLine{1000     int32\_t fileSizeInBytes = 4 + 26 + 16 + totalNumAudioSampleBytes;}
-\DoxyCodeLine{1001     \textcolor{keywordflow}{if} (iXMLChunkSize > 0)}
-\DoxyCodeLine{1002     \{}
-\DoxyCodeLine{1003         fileSizeInBytes += (8 + iXMLChunkSize);}
-\DoxyCodeLine{1004     \}}
-\DoxyCodeLine{1005 }
-\DoxyCodeLine{1006     addInt32ToFileData (fileData, fileSizeInBytes, Endianness::BigEndian);}
-\DoxyCodeLine{1007     }
-\DoxyCodeLine{1008     addStringToFileData (fileData, \textcolor{stringliteral}{"{}AIFF"{}});}
-\DoxyCodeLine{1009     }
-\DoxyCodeLine{1010     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{1011     \textcolor{comment}{// COMM CHUNK}}
-\DoxyCodeLine{1012     addStringToFileData (fileData, \textcolor{stringliteral}{"{}COMM"{}});}
-\DoxyCodeLine{1013     addInt32ToFileData (fileData, 18, Endianness::BigEndian); \textcolor{comment}{// commChunkSize}}
-\DoxyCodeLine{1014     addInt16ToFileData (fileData, getNumChannels(), Endianness::BigEndian); \textcolor{comment}{// num channels}}
-\DoxyCodeLine{1015     addInt32ToFileData (fileData, getNumSamplesPerChannel(), Endianness::BigEndian); \textcolor{comment}{// num samples per channel}}
-\DoxyCodeLine{1016     addInt16ToFileData (fileData, bitDepth, Endianness::BigEndian); \textcolor{comment}{// bit depth}}
-\DoxyCodeLine{1017     addSampleRateToAiffData (fileData, sampleRate);}
-\DoxyCodeLine{1018     }
-\DoxyCodeLine{1019     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{1020     \textcolor{comment}{// SSND CHUNK}}
-\DoxyCodeLine{1021     addStringToFileData (fileData, \textcolor{stringliteral}{"{}SSND"{}});}
-\DoxyCodeLine{1022     addInt32ToFileData (fileData, soundDataChunkSize, Endianness::BigEndian);}
-\DoxyCodeLine{1023     addInt32ToFileData (fileData, 0, Endianness::BigEndian); \textcolor{comment}{// offset}}
-\DoxyCodeLine{1024     addInt32ToFileData (fileData, 0, Endianness::BigEndian); \textcolor{comment}{// block size}}
-\DoxyCodeLine{1025     }
-\DoxyCodeLine{1026     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < getNumSamplesPerChannel(); i++)}
-\DoxyCodeLine{1027     \{}
-\DoxyCodeLine{1028         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < getNumChannels(); channel++)}
-\DoxyCodeLine{1029         \{}
-\DoxyCodeLine{1030             \textcolor{keywordflow}{if} (bitDepth == 8)}
-\DoxyCodeLine{1031             \{}
-\DoxyCodeLine{1032                 uint8\_t \textcolor{keywordtype}{byte} = sampleToSingleByte (samples[channel][i]);}
-\DoxyCodeLine{1033                 fileData.push\_back (\textcolor{keywordtype}{byte});}
-\DoxyCodeLine{1034             \}}
-\DoxyCodeLine{1035             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
-\DoxyCodeLine{1036             \{}
-\DoxyCodeLine{1037                 int16\_t sampleAsInt = sampleToSixteenBitInt (samples[channel][i]);}
-\DoxyCodeLine{1038                 addInt16ToFileData (fileData, sampleAsInt, Endianness::BigEndian);}
-\DoxyCodeLine{1039             \}}
-\DoxyCodeLine{1040             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
-\DoxyCodeLine{1041             \{}
-\DoxyCodeLine{1042                 int32\_t sampleAsIntAgain = (int32\_t) (samples[channel][i] * (T)8388608.);}
-\DoxyCodeLine{1043                 }
-\DoxyCodeLine{1044                 uint8\_t bytes[3];}
-\DoxyCodeLine{1045                 bytes[0] = (uint8\_t) (sampleAsIntAgain >> 16) \& 0xFF;}
-\DoxyCodeLine{1046                 bytes[1] = (uint8\_t) (sampleAsIntAgain >>  8) \& 0xFF;}
-\DoxyCodeLine{1047                 bytes[2] = (uint8\_t) sampleAsIntAgain \& 0xFF;}
-\DoxyCodeLine{1048                 }
-\DoxyCodeLine{1049                 fileData.push\_back (bytes[0]);}
-\DoxyCodeLine{1050                 fileData.push\_back (bytes[1]);}
-\DoxyCodeLine{1051                 fileData.push\_back (bytes[2]);}
-\DoxyCodeLine{1052             \}}
-\DoxyCodeLine{1053             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
-\DoxyCodeLine{1054             \{}
-\DoxyCodeLine{1055                 \textcolor{comment}{// write samples as signed integers (no implementation yet for floating point, but looking at WAV implementation should help)}}
-\DoxyCodeLine{1056                 int32\_t sampleAsInt = (int32\_t) (samples[channel][i] * std::numeric\_limits<int32\_t>::max());}
-\DoxyCodeLine{1057                 addInt32ToFileData (fileData, sampleAsInt, Endianness::BigEndian);}
-\DoxyCodeLine{1058             \}}
-\DoxyCodeLine{1059             \textcolor{keywordflow}{else}}
-\DoxyCodeLine{1060             \{}
-\DoxyCodeLine{1061                 assert (\textcolor{keyword}{false} \&\& \textcolor{stringliteral}{"{}Trying to write a file with unsupported bit depth"{}});}
-\DoxyCodeLine{1062                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{1063             \}}
-\DoxyCodeLine{1064         \}}
-\DoxyCodeLine{1065     \}}
-\DoxyCodeLine{1066 }
-\DoxyCodeLine{1067     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
-\DoxyCodeLine{1068     \textcolor{comment}{// iXML CHUNK}}
-\DoxyCodeLine{1069     \textcolor{keywordflow}{if} (iXMLChunkSize > 0)}
-\DoxyCodeLine{1070     \{}
-\DoxyCodeLine{1071         addStringToFileData (fileData, \textcolor{stringliteral}{"{}iXML"{}});}
-\DoxyCodeLine{1072         addInt32ToFileData (fileData, iXMLChunkSize, Endianness::BigEndian);}
-\DoxyCodeLine{1073         addStringToFileData (fileData, iXMLChunk);}
-\DoxyCodeLine{1074     \}}
-\DoxyCodeLine{1075     }
-\DoxyCodeLine{1076     \textcolor{comment}{// check that the various sizes we put in the metadata are correct}}
-\DoxyCodeLine{1077     \textcolor{keywordflow}{if} (fileSizeInBytes != \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (fileData.size() -\/ 8) || soundDataChunkSize != getNumSamplesPerChannel() *  numBytesPerFrame + 8)}
-\DoxyCodeLine{1078     \{}
-\DoxyCodeLine{1079         reportError (\textcolor{stringliteral}{"{}ERROR: couldn't save file to "{}} + filePath);}
-\DoxyCodeLine{1080         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{1081     \}}
-\DoxyCodeLine{1082     }
-\DoxyCodeLine{1083     \textcolor{comment}{// try to write the file}}
-\DoxyCodeLine{1084     \textcolor{keywordflow}{return} writeDataToFile (fileData, filePath);}
-\DoxyCodeLine{1085 \}}
-\DoxyCodeLine{1086 }
-\DoxyCodeLine{1087 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1088 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1089 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::writeDataToFile}} (std::vector<uint8\_t>\& fileData, std::string filePath)}
-\DoxyCodeLine{1090 \{}
-\DoxyCodeLine{1091     std::ofstream outputFile (filePath, std::ios::binary);}
-\DoxyCodeLine{1092     }
-\DoxyCodeLine{1093     \textcolor{keywordflow}{if} (outputFile.is\_open())}
-\DoxyCodeLine{1094     \{}
-\DoxyCodeLine{1095         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < fileData.size(); i++)}
-\DoxyCodeLine{1096         \{}
-\DoxyCodeLine{1097             \textcolor{keywordtype}{char} value = (char) fileData[i];}
-\DoxyCodeLine{1098             outputFile.write (\&value, \textcolor{keyword}{sizeof} (\textcolor{keywordtype}{char}));}
-\DoxyCodeLine{1099         \}}
-\DoxyCodeLine{1100         }
-\DoxyCodeLine{1101         outputFile.close();}
-\DoxyCodeLine{1102         }
-\DoxyCodeLine{1103         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
-\DoxyCodeLine{1104     \}}
-\DoxyCodeLine{1105     }
-\DoxyCodeLine{1106     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
-\DoxyCodeLine{1107 \}}
-\DoxyCodeLine{1108 }
-\DoxyCodeLine{1109 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1110 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1111 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addStringToFileData}} (std::vector<uint8\_t>\& fileData, std::string s)}
-\DoxyCodeLine{1112 \{}
-\DoxyCodeLine{1113     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < s.length();i++)}
-\DoxyCodeLine{1114         fileData.push\_back ((uint8\_t) s[i]);}
-\DoxyCodeLine{1115 \}}
-\DoxyCodeLine{1116 }
-\DoxyCodeLine{1117 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1118 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1119 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addInt32ToFileData}} (std::vector<uint8\_t>\& fileData, int32\_t i, Endianness endianness)}
-\DoxyCodeLine{1120 \{}
-\DoxyCodeLine{1121     uint8\_t bytes[4];}
-\DoxyCodeLine{1122     }
-\DoxyCodeLine{1123     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
-\DoxyCodeLine{1124     \{}
-\DoxyCodeLine{1125         bytes[3] = (i >> 24) \& 0xFF;}
-\DoxyCodeLine{1126         bytes[2] = (i >> 16) \& 0xFF;}
-\DoxyCodeLine{1127         bytes[1] = (i >> 8) \& 0xFF;}
-\DoxyCodeLine{1128         bytes[0] = i \& 0xFF;}
-\DoxyCodeLine{1129     \}}
-\DoxyCodeLine{1130     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{1131     \{}
-\DoxyCodeLine{1132         bytes[0] = (i >> 24) \& 0xFF;}
-\DoxyCodeLine{1133         bytes[1] = (i >> 16) \& 0xFF;}
-\DoxyCodeLine{1134         bytes[2] = (i >> 8) \& 0xFF;}
-\DoxyCodeLine{1135         bytes[3] = i \& 0xFF;}
-\DoxyCodeLine{1136     \}}
-\DoxyCodeLine{1137     }
-\DoxyCodeLine{1138     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 4; i++)}
-\DoxyCodeLine{1139         fileData.push\_back (bytes[i]);}
-\DoxyCodeLine{1140 \}}
-\DoxyCodeLine{1141 }
-\DoxyCodeLine{1142 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1143 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1144 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addInt16ToFileData}} (std::vector<uint8\_t>\& fileData, int16\_t i, Endianness endianness)}
-\DoxyCodeLine{1145 \{}
-\DoxyCodeLine{1146     uint8\_t bytes[2];}
-\DoxyCodeLine{1147     }
-\DoxyCodeLine{1148     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
-\DoxyCodeLine{1149     \{}
-\DoxyCodeLine{1150         bytes[1] = (i >> 8) \& 0xFF;}
-\DoxyCodeLine{1151         bytes[0] = i \& 0xFF;}
-\DoxyCodeLine{1152     \}}
-\DoxyCodeLine{1153     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{1154     \{}
-\DoxyCodeLine{1155         bytes[0] = (i >> 8) \& 0xFF;}
-\DoxyCodeLine{1156         bytes[1] = i \& 0xFF;}
-\DoxyCodeLine{1157     \}}
-\DoxyCodeLine{1158     }
-\DoxyCodeLine{1159     fileData.push\_back (bytes[0]);}
-\DoxyCodeLine{1160     fileData.push\_back (bytes[1]);}
-\DoxyCodeLine{1161 \}}
-\DoxyCodeLine{1162 }
-\DoxyCodeLine{1163 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1164 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1165 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::clearAudioBuffer}}()}
-\DoxyCodeLine{1166 \{}
-\DoxyCodeLine{1167     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < samples.size();i++)}
-\DoxyCodeLine{1168     \{}
-\DoxyCodeLine{1169         samples[i].clear();}
-\DoxyCodeLine{1170     \}}
-\DoxyCodeLine{1171     }
-\DoxyCodeLine{1172     samples.clear();}
-\DoxyCodeLine{1173 \}}
-\DoxyCodeLine{1174 }
-\DoxyCodeLine{1175 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1176 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1177 \mbox{\hyperlink{AudioFile_8h_ad18559d169602e85d0ad68da6ef8593f}{AudioFileFormat}} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::determineAudioFileFormat}} (std::vector<uint8\_t>\& fileData)}
-\DoxyCodeLine{1178 \{}
-\DoxyCodeLine{1179     std::string header (fileData.begin(), fileData.begin() + 4);}
-\DoxyCodeLine{1180     }
-\DoxyCodeLine{1181     \textcolor{keywordflow}{if} (header == \textcolor{stringliteral}{"{}RIFF"{}})}
-\DoxyCodeLine{1182         \textcolor{keywordflow}{return} AudioFileFormat::Wave;}
-\DoxyCodeLine{1183     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (header == \textcolor{stringliteral}{"{}FORM"{}})}
-\DoxyCodeLine{1184         \textcolor{keywordflow}{return} AudioFileFormat::Aiff;}
-\DoxyCodeLine{1185     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{1186         \textcolor{keywordflow}{return} AudioFileFormat::Error;}
-\DoxyCodeLine{1187 \}}
-\DoxyCodeLine{1188 }
-\DoxyCodeLine{1189 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1190 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1191 int32\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::fourBytesToInt}} (std::vector<uint8\_t>\& source, \textcolor{keywordtype}{int} startIndex, Endianness endianness)}
-\DoxyCodeLine{1192 \{}
-\DoxyCodeLine{1193     int32\_t result;}
-\DoxyCodeLine{1194     }
-\DoxyCodeLine{1195     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
-\DoxyCodeLine{1196         result = (source[startIndex + 3] << 24) | (source[startIndex + 2] << 16) | (source[startIndex + 1] << 8) | source[startIndex];}
-\DoxyCodeLine{1197     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{1198         result = (source[startIndex] << 24) | (source[startIndex + 1] << 16) | (source[startIndex + 2] << 8) | source[startIndex + 3];}
-\DoxyCodeLine{1199     }
-\DoxyCodeLine{1200     \textcolor{keywordflow}{return} result;}
-\DoxyCodeLine{1201 \}}
-\DoxyCodeLine{1202 }
-\DoxyCodeLine{1203 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1204 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1205 int16\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::twoBytesToInt}} (std::vector<uint8\_t>\& source, \textcolor{keywordtype}{int} startIndex, Endianness endianness)}
-\DoxyCodeLine{1206 \{}
-\DoxyCodeLine{1207     int16\_t result;}
-\DoxyCodeLine{1208     }
-\DoxyCodeLine{1209     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
-\DoxyCodeLine{1210         result = (source[startIndex + 1] << 8) | source[startIndex];}
-\DoxyCodeLine{1211     \textcolor{keywordflow}{else}}
-\DoxyCodeLine{1212         result = (source[startIndex] << 8) | source[startIndex + 1];}
-\DoxyCodeLine{1213     }
-\DoxyCodeLine{1214     \textcolor{keywordflow}{return} result;}
-\DoxyCodeLine{1215 \}}
-\DoxyCodeLine{1216 }
-\DoxyCodeLine{1217 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1218 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1219 \textcolor{keywordtype}{int} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::getIndexOfString}} (std::vector<uint8\_t>\& source, std::string stringToSearchFor)}
-\DoxyCodeLine{1220 \{}
-\DoxyCodeLine{1221     \textcolor{keywordtype}{int} index = -\/1;}
-\DoxyCodeLine{1222     \textcolor{keywordtype}{int} stringLength = (int)stringToSearchFor.length();}
-\DoxyCodeLine{1223     }
-\DoxyCodeLine{1224     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < source.size() -\/ stringLength;i++)}
-\DoxyCodeLine{1225     \{}
-\DoxyCodeLine{1226         std::string section (source.begin() + i, source.begin() + i + stringLength);}
-\DoxyCodeLine{1227         }
-\DoxyCodeLine{1228         \textcolor{keywordflow}{if} (section == stringToSearchFor)}
-\DoxyCodeLine{1229         \{}
-\DoxyCodeLine{1230             index = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>} (i);}
-\DoxyCodeLine{1231             \textcolor{keywordflow}{break};}
-\DoxyCodeLine{1232         \}}
-\DoxyCodeLine{1233     \}}
-\DoxyCodeLine{1234     }
-\DoxyCodeLine{1235     \textcolor{keywordflow}{return} index;}
-\DoxyCodeLine{1236 \}}
-\DoxyCodeLine{1237 }
-\DoxyCodeLine{1238 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1239 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1240 \textcolor{keywordtype}{int} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::getIndexOfChunk}} (std::vector<uint8\_t>\& source, \textcolor{keyword}{const} std::string\& chunkHeaderID, \textcolor{keywordtype}{int} startIndex, Endianness endianness)}
-\DoxyCodeLine{1241 \{}
-\DoxyCodeLine{1242     \textcolor{keyword}{constexpr} \textcolor{keywordtype}{int} dataLen = 4;}
-\DoxyCodeLine{1243     \textcolor{keywordflow}{if} (chunkHeaderID.size() != dataLen)}
-\DoxyCodeLine{1244     \{}
-\DoxyCodeLine{1245         assert (\textcolor{keyword}{false} \&\& \textcolor{stringliteral}{"{}Invalid chunk header ID string"{}});}
-\DoxyCodeLine{1246         \textcolor{keywordflow}{return} -\/1;}
-\DoxyCodeLine{1247     \}}
-\DoxyCodeLine{1248 }
-\DoxyCodeLine{1249     \textcolor{keywordtype}{int} i = startIndex;}
-\DoxyCodeLine{1250     \textcolor{keywordflow}{while} (i < source.size() -\/ dataLen)}
-\DoxyCodeLine{1251     \{}
-\DoxyCodeLine{1252         \textcolor{keywordflow}{if} (memcmp (\&source[i], chunkHeaderID.data(), dataLen) == 0)}
-\DoxyCodeLine{1253         \{}
-\DoxyCodeLine{1254             \textcolor{keywordflow}{return} i;}
-\DoxyCodeLine{1255         \}}
-\DoxyCodeLine{1256 }
-\DoxyCodeLine{1257         i += dataLen;}
-\DoxyCodeLine{1258         \textcolor{keyword}{auto} chunkSize = fourBytesToInt (source, i, endianness);}
-\DoxyCodeLine{1259         i += (dataLen + chunkSize);}
-\DoxyCodeLine{1260     \}}
-\DoxyCodeLine{1261 }
-\DoxyCodeLine{1262     \textcolor{keywordflow}{return} -\/1;}
-\DoxyCodeLine{1263 \}}
-\DoxyCodeLine{1264 }
-\DoxyCodeLine{1265 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1266 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1267 T \mbox{\hyperlink{classAudioFile}{AudioFile<T>::sixteenBitIntToSample}} (int16\_t sample)}
-\DoxyCodeLine{1268 \{}
-\DoxyCodeLine{1269     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (sample) / \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (32768.);}
-\DoxyCodeLine{1270 \}}
-\DoxyCodeLine{1271 }
-\DoxyCodeLine{1272 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1273 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1274 int16\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::sampleToSixteenBitInt}} (T sample)}
-\DoxyCodeLine{1275 \{}
-\DoxyCodeLine{1276     sample = clamp (sample, -\/1., 1.);}
-\DoxyCodeLine{1277     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}int16\_t\textcolor{keyword}{>} (sample * 32767.);}
-\DoxyCodeLine{1278 \}}
-\DoxyCodeLine{1279 }
-\DoxyCodeLine{1280 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1281 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1282 uint8\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::sampleToSingleByte}} (T sample)}
-\DoxyCodeLine{1283 \{}
-\DoxyCodeLine{1284     sample = clamp (sample, -\/1., 1.);}
-\DoxyCodeLine{1285     sample = (sample + 1.) / 2.;}
-\DoxyCodeLine{1286     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>} (sample * 255.);}
-\DoxyCodeLine{1287 \}}
-\DoxyCodeLine{1288 }
-\DoxyCodeLine{1289 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1290 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1291 T \mbox{\hyperlink{classAudioFile}{AudioFile<T>::singleByteToSample}} (uint8\_t sample)}
-\DoxyCodeLine{1292 \{}
-\DoxyCodeLine{1293     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (sample -\/ 128) / \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (128.);}
-\DoxyCodeLine{1294 \}}
-\DoxyCodeLine{1295 }
-\DoxyCodeLine{1296 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1297 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1298 T \mbox{\hyperlink{classAudioFile}{AudioFile<T>::clamp}} (T value, T minValue, T maxValue)}
-\DoxyCodeLine{1299 \{}
-\DoxyCodeLine{1300     value = std::min (value, maxValue);}
-\DoxyCodeLine{1301     value = std::max (value, minValue);}
-\DoxyCodeLine{1302     \textcolor{keywordflow}{return} value;}
-\DoxyCodeLine{1303 \}}
-\DoxyCodeLine{1304 }
-\DoxyCodeLine{1305 \textcolor{comment}{//=============================================================}}
-\DoxyCodeLine{1306 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
-\DoxyCodeLine{1307 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::reportError}} (std::string errorMessage)}
-\DoxyCodeLine{1308 \{}
-\DoxyCodeLine{1309     \textcolor{keywordflow}{if} (logErrorsToConsole)}
-\DoxyCodeLine{1310         std::cout << errorMessage << std::endl;}
-\DoxyCodeLine{1311 \}}
-\DoxyCodeLine{1312 }
-\DoxyCodeLine{1313 \textcolor{preprocessor}{\#if defined (\_MSC\_VER)}}
-\DoxyCodeLine{1314     \_\_pragma(warning (pop))}
-\DoxyCodeLine{1315 \textcolor{preprocessor}{\#elif defined (\_\_GNUC\_\_)}}
-\DoxyCodeLine{1316     \_Pragma(\textcolor{stringliteral}{"{}GCC diagnostic pop"{}})}
-\DoxyCodeLine{1317 \textcolor{preprocessor}{\#endif}}
-\DoxyCodeLine{1318 }
-\DoxyCodeLine{1319 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/* AudioFile\_h */}\textcolor{preprocessor}{}}
+\DoxyCodeLine{487         \textcolor{comment}{// allocate}}
+\DoxyCodeLine{488         fileData.resize (length);}
+\DoxyCodeLine{489 }
+\DoxyCodeLine{490         file.read(\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>} (fileData.data()), length);}
+\DoxyCodeLine{491         file.close();}
+\DoxyCodeLine{492 }
+\DoxyCodeLine{493         \textcolor{keywordflow}{if} (file.gcount() != length)}
+\DoxyCodeLine{494         \{}
+\DoxyCodeLine{495                 reportError (\textcolor{stringliteral}{"{}ERROR: Couldn't read entire file\(\backslash\)n"{}} + filePath);}
+\DoxyCodeLine{496                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{497         \}}
+\DoxyCodeLine{498     }
+\DoxyCodeLine{499     \textcolor{keywordflow}{return} loadFromMemory (fileData);}
+\DoxyCodeLine{500 \}}
+\DoxyCodeLine{501 }
+\DoxyCodeLine{502 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{503 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{504 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile_a138cd246abfc23b57caf1519d78b1312}{AudioFile<T>::loadFromMemory}} (std::vector<uint8\_t>\& fileData)}
+\DoxyCodeLine{505 \{}
+\DoxyCodeLine{506     \textcolor{comment}{// get audio file format}}
+\DoxyCodeLine{507     audioFileFormat = determineAudioFileFormat (fileData);}
+\DoxyCodeLine{508     }
+\DoxyCodeLine{509     \textcolor{keywordflow}{if} (audioFileFormat == AudioFileFormat::Wave)}
+\DoxyCodeLine{510     \{}
+\DoxyCodeLine{511         \textcolor{keywordflow}{return} decodeWaveFile (fileData);}
+\DoxyCodeLine{512     \}}
+\DoxyCodeLine{513     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (audioFileFormat == AudioFileFormat::Aiff)}
+\DoxyCodeLine{514     \{}
+\DoxyCodeLine{515         \textcolor{keywordflow}{return} decodeAiffFile (fileData);}
+\DoxyCodeLine{516     \}}
+\DoxyCodeLine{517     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{518     \{}
+\DoxyCodeLine{519         reportError (\textcolor{stringliteral}{"{}Audio File Type: Error"{}});}
+\DoxyCodeLine{520         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{521     \}}
+\DoxyCodeLine{522 \}}
+\DoxyCodeLine{523 }
+\DoxyCodeLine{524 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{525 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{526 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::decodeWaveFile}} (std::vector<uint8\_t>\& fileData)}
+\DoxyCodeLine{527 \{}
+\DoxyCodeLine{528     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{529     \textcolor{comment}{// HEADER CHUNK}}
+\DoxyCodeLine{530     std::string headerChunkID (fileData.begin(), fileData.begin() + 4);}
+\DoxyCodeLine{531     \textcolor{comment}{//int32\_t fileSizeInBytes = fourBytesToInt (fileData, 4) + 8;}}
+\DoxyCodeLine{532     std::string format (fileData.begin() + 8, fileData.begin() + 12);}
+\DoxyCodeLine{533     }
+\DoxyCodeLine{534     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{535     \textcolor{comment}{// try and find the start points of key chunks}}
+\DoxyCodeLine{536     \textcolor{keywordtype}{int} indexOfDataChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}data"{}}, 12);}
+\DoxyCodeLine{537     \textcolor{keywordtype}{int} indexOfFormatChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}fmt "{}}, 12);}
+\DoxyCodeLine{538     \textcolor{keywordtype}{int} indexOfXMLChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}iXML"{}}, 12);}
+\DoxyCodeLine{539     }
+\DoxyCodeLine{540     \textcolor{comment}{// if we can't find the data or format chunks, or the IDs/formats don't seem to be as expected}}
+\DoxyCodeLine{541     \textcolor{comment}{// then it is unlikely we'll able to read this file, so abort}}
+\DoxyCodeLine{542     \textcolor{keywordflow}{if} (indexOfDataChunk == -\/1 || indexOfFormatChunk == -\/1 || headerChunkID != \textcolor{stringliteral}{"{}RIFF"{}} || format != \textcolor{stringliteral}{"{}WAVE"{}})}
+\DoxyCodeLine{543     \{}
+\DoxyCodeLine{544         reportError (\textcolor{stringliteral}{"{}ERROR: this doesn't seem to be a valid .WAV file"{}});}
+\DoxyCodeLine{545         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{546     \}}
+\DoxyCodeLine{547     }
+\DoxyCodeLine{548     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{549     \textcolor{comment}{// FORMAT CHUNK}}
+\DoxyCodeLine{550     \textcolor{keywordtype}{int} f = indexOfFormatChunk;}
+\DoxyCodeLine{551     std::string formatChunkID (fileData.begin() + f, fileData.begin() + f + 4);}
+\DoxyCodeLine{552     \textcolor{comment}{//int32\_t formatChunkSize = fourBytesToInt (fileData, f + 4);}}
+\DoxyCodeLine{553     uint16\_t audioFormat = twoBytesToInt (fileData, f + 8);}
+\DoxyCodeLine{554     uint16\_t numChannels = twoBytesToInt (fileData, f + 10);}
+\DoxyCodeLine{555     sampleRate = (uint32\_t) fourBytesToInt (fileData, f + 12);}
+\DoxyCodeLine{556     uint32\_t numBytesPerSecond = fourBytesToInt (fileData, f + 16);}
+\DoxyCodeLine{557     uint16\_t numBytesPerBlock = twoBytesToInt (fileData, f + 20);}
+\DoxyCodeLine{558     bitDepth = (int) twoBytesToInt (fileData, f + 22);}
+\DoxyCodeLine{559     }
+\DoxyCodeLine{560     uint16\_t numBytesPerSample = \textcolor{keyword}{static\_cast<}uint16\_t\textcolor{keyword}{>} (bitDepth) / 8;}
+\DoxyCodeLine{561     }
+\DoxyCodeLine{562     \textcolor{comment}{// check that the audio format is PCM or Float or extensible}}
+\DoxyCodeLine{563     \textcolor{keywordflow}{if} (audioFormat != WavAudioFormat::PCM \&\& audioFormat != WavAudioFormat::IEEEFloat \&\& audioFormat != WavAudioFormat::Extensible)}
+\DoxyCodeLine{564     \{}
+\DoxyCodeLine{565         reportError (\textcolor{stringliteral}{"{}ERROR: this .WAV file is encoded in a format that this library does not support at present"{}});}
+\DoxyCodeLine{566         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{567     \}}
+\DoxyCodeLine{568     }
+\DoxyCodeLine{569     \textcolor{comment}{// check the number of channels is mono or stereo}}
+\DoxyCodeLine{570     \textcolor{keywordflow}{if} (numChannels < 1 || numChannels > 128)}
+\DoxyCodeLine{571     \{}
+\DoxyCodeLine{572         reportError (\textcolor{stringliteral}{"{}ERROR: this WAV file seems to be an invalid number of channels (or corrupted?)"{}});}
+\DoxyCodeLine{573         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{574     \}}
+\DoxyCodeLine{575     }
+\DoxyCodeLine{576     \textcolor{comment}{// check header data is consistent}}
+\DoxyCodeLine{577     \textcolor{keywordflow}{if} (numBytesPerSecond != \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>} ((numChannels * sampleRate * bitDepth) / 8) || numBytesPerBlock != (numChannels * numBytesPerSample))}
+\DoxyCodeLine{578     \{}
+\DoxyCodeLine{579         reportError (\textcolor{stringliteral}{"{}ERROR: the header data in this WAV file seems to be inconsistent"{}});}
+\DoxyCodeLine{580         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{581     \}}
+\DoxyCodeLine{582     }
+\DoxyCodeLine{583     \textcolor{comment}{// check bit depth is either 8, 16, 24 or 32 bit}}
+\DoxyCodeLine{584     \textcolor{keywordflow}{if} (bitDepth != 8 \&\& bitDepth != 16 \&\& bitDepth != 24 \&\& bitDepth != 32)}
+\DoxyCodeLine{585     \{}
+\DoxyCodeLine{586         reportError (\textcolor{stringliteral}{"{}ERROR: this file has a bit depth that is not 8, 16, 24 or 32 bits"{}});}
+\DoxyCodeLine{587         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{588     \}}
+\DoxyCodeLine{589     }
+\DoxyCodeLine{590     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{591     \textcolor{comment}{// DATA CHUNK}}
+\DoxyCodeLine{592     \textcolor{keywordtype}{int} d = indexOfDataChunk;}
+\DoxyCodeLine{593     std::string dataChunkID (fileData.begin() + d, fileData.begin() + d + 4);}
+\DoxyCodeLine{594     int32\_t dataChunkSize = fourBytesToInt (fileData, d + 4);}
+\DoxyCodeLine{595     }
+\DoxyCodeLine{596     \textcolor{keywordtype}{int} numSamples = dataChunkSize / (numChannels * bitDepth / 8);}
+\DoxyCodeLine{597     \textcolor{keywordtype}{int} samplesStartIndex = indexOfDataChunk + 8;}
+\DoxyCodeLine{598     }
+\DoxyCodeLine{599     clearAudioBuffer();}
+\DoxyCodeLine{600     samples.resize (numChannels);}
+\DoxyCodeLine{601     }
+\DoxyCodeLine{602     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < numSamples; i++)}
+\DoxyCodeLine{603     \{}
+\DoxyCodeLine{604         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < numChannels; channel++)}
+\DoxyCodeLine{605         \{}
+\DoxyCodeLine{606             \textcolor{keywordtype}{int} sampleIndex = samplesStartIndex + (numBytesPerBlock * i) + channel * numBytesPerSample;}
+\DoxyCodeLine{607             }
+\DoxyCodeLine{608             \textcolor{keywordflow}{if} ((sampleIndex + (bitDepth / 8) -\/ 1) >= fileData.size())}
+\DoxyCodeLine{609             \{}
+\DoxyCodeLine{610                 reportError (\textcolor{stringliteral}{"{}ERROR: read file error as the metadata indicates more samples than there are in the file data"{}});}
+\DoxyCodeLine{611                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{612             \}}
+\DoxyCodeLine{613             }
+\DoxyCodeLine{614             \textcolor{keywordflow}{if} (bitDepth == 8)}
+\DoxyCodeLine{615             \{}
+\DoxyCodeLine{616                 T sample = singleByteToSample (fileData[sampleIndex]);}
+\DoxyCodeLine{617                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{618             \}}
+\DoxyCodeLine{619             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
+\DoxyCodeLine{620             \{}
+\DoxyCodeLine{621                 int16\_t sampleAsInt = twoBytesToInt (fileData, sampleIndex);}
+\DoxyCodeLine{622                 T sample = sixteenBitIntToSample (sampleAsInt);}
+\DoxyCodeLine{623                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{624             \}}
+\DoxyCodeLine{625             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
+\DoxyCodeLine{626             \{}
+\DoxyCodeLine{627                 int32\_t sampleAsInt = 0;}
+\DoxyCodeLine{628                 sampleAsInt = (fileData[sampleIndex + 2] << 16) | (fileData[sampleIndex + 1] << 8) | fileData[sampleIndex];}
+\DoxyCodeLine{629                 }
+\DoxyCodeLine{630                 \textcolor{keywordflow}{if} (sampleAsInt \& 0x800000) \textcolor{comment}{//  if the 24th bit is set, this is a negative number in 24-\/bit world}}
+\DoxyCodeLine{631                     sampleAsInt = sampleAsInt | \string~0xFFFFFF; \textcolor{comment}{// so make sure sign is extended to the 32 bit float}}
+\DoxyCodeLine{632 }
+\DoxyCodeLine{633                 T sample = (T)sampleAsInt / (T)8388608.;}
+\DoxyCodeLine{634                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{635             \}}
+\DoxyCodeLine{636             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
+\DoxyCodeLine{637             \{}
+\DoxyCodeLine{638                 int32\_t sampleAsInt = fourBytesToInt (fileData, sampleIndex);}
+\DoxyCodeLine{639                 T sample;}
+\DoxyCodeLine{640                 }
+\DoxyCodeLine{641                 \textcolor{keywordflow}{if} (audioFormat == WavAudioFormat::IEEEFloat)}
+\DoxyCodeLine{642                     sample = (T)\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{float}\&\textcolor{keyword}{>} (sampleAsInt);}
+\DoxyCodeLine{643                 \textcolor{keywordflow}{else} \textcolor{comment}{// assume PCM}}
+\DoxyCodeLine{644                     sample = (T) sampleAsInt / \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>} (std::numeric\_limits<std::int32\_t>::max());}
+\DoxyCodeLine{645                 }
+\DoxyCodeLine{646                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{647             \}}
+\DoxyCodeLine{648             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{649             \{}
+\DoxyCodeLine{650                 assert (\textcolor{keyword}{false});}
+\DoxyCodeLine{651             \}}
+\DoxyCodeLine{652         \}}
+\DoxyCodeLine{653     \}}
+\DoxyCodeLine{654 }
+\DoxyCodeLine{655     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{656     \textcolor{comment}{// iXML CHUNK}}
+\DoxyCodeLine{657     \textcolor{keywordflow}{if} (indexOfXMLChunk != -\/1)}
+\DoxyCodeLine{658     \{}
+\DoxyCodeLine{659         int32\_t chunkSize = fourBytesToInt (fileData, indexOfXMLChunk + 4);}
+\DoxyCodeLine{660         iXMLChunk = std::string ((\textcolor{keyword}{const} \textcolor{keywordtype}{char}*) \&fileData[indexOfXMLChunk + 8], chunkSize);}
+\DoxyCodeLine{661     \}}
+\DoxyCodeLine{662 }
+\DoxyCodeLine{663     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{664 \}}
+\DoxyCodeLine{665 }
+\DoxyCodeLine{666 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{667 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{668 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::decodeAiffFile}} (std::vector<uint8\_t>\& fileData)}
+\DoxyCodeLine{669 \{}
+\DoxyCodeLine{670     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{671     \textcolor{comment}{// HEADER CHUNK}}
+\DoxyCodeLine{672     std::string headerChunkID (fileData.begin(), fileData.begin() + 4);}
+\DoxyCodeLine{673     \textcolor{comment}{//int32\_t fileSizeInBytes = fourBytesToInt (fileData, 4, Endianness::BigEndian) + 8;}}
+\DoxyCodeLine{674     std::string format (fileData.begin() + 8, fileData.begin() + 12);}
+\DoxyCodeLine{675     }
+\DoxyCodeLine{676     \textcolor{keywordtype}{int} audioFormat = format == \textcolor{stringliteral}{"{}AIFF"{}} ? AIFFAudioFormat::Uncompressed : format == \textcolor{stringliteral}{"{}AIFC"{}} ? AIFFAudioFormat::Compressed : AIFFAudioFormat::Error;}
+\DoxyCodeLine{677     }
+\DoxyCodeLine{678     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{679     \textcolor{comment}{// try and find the start points of key chunks}}
+\DoxyCodeLine{680     \textcolor{keywordtype}{int} indexOfCommChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}COMM"{}}, 12, Endianness::BigEndian);}
+\DoxyCodeLine{681     \textcolor{keywordtype}{int} indexOfSoundDataChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}SSND"{}}, 12, Endianness::BigEndian);}
+\DoxyCodeLine{682     \textcolor{keywordtype}{int} indexOfXMLChunk = getIndexOfChunk (fileData, \textcolor{stringliteral}{"{}iXML"{}}, 12, Endianness::BigEndian);}
+\DoxyCodeLine{683     }
+\DoxyCodeLine{684     \textcolor{comment}{// if we can't find the data or format chunks, or the IDs/formats don't seem to be as expected}}
+\DoxyCodeLine{685     \textcolor{comment}{// then it is unlikely we'll able to read this file, so abort}}
+\DoxyCodeLine{686     \textcolor{keywordflow}{if} (indexOfSoundDataChunk == -\/1 || indexOfCommChunk == -\/1 || headerChunkID != \textcolor{stringliteral}{"{}FORM"{}} || audioFormat == AIFFAudioFormat::Error)}
+\DoxyCodeLine{687     \{}
+\DoxyCodeLine{688         reportError (\textcolor{stringliteral}{"{}ERROR: this doesn't seem to be a valid AIFF file"{}});}
+\DoxyCodeLine{689         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{690     \}}
+\DoxyCodeLine{691 }
+\DoxyCodeLine{692     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{693     \textcolor{comment}{// COMM CHUNK}}
+\DoxyCodeLine{694     \textcolor{keywordtype}{int} p = indexOfCommChunk;}
+\DoxyCodeLine{695     std::string commChunkID (fileData.begin() + p, fileData.begin() + p + 4);}
+\DoxyCodeLine{696     \textcolor{comment}{//int32\_t commChunkSize = fourBytesToInt (fileData, p + 4, Endianness::BigEndian);}}
+\DoxyCodeLine{697     int16\_t numChannels = twoBytesToInt (fileData, p + 8, Endianness::BigEndian);}
+\DoxyCodeLine{698     int32\_t numSamplesPerChannel = fourBytesToInt (fileData, p + 10, Endianness::BigEndian);}
+\DoxyCodeLine{699     bitDepth = (int) twoBytesToInt (fileData, p + 14, Endianness::BigEndian);}
+\DoxyCodeLine{700     sampleRate = getAiffSampleRate (fileData, p + 16);}
+\DoxyCodeLine{701     }
+\DoxyCodeLine{702     \textcolor{comment}{// check the sample rate was properly decoded}}
+\DoxyCodeLine{703     \textcolor{keywordflow}{if} (sampleRate == 0)}
+\DoxyCodeLine{704     \{}
+\DoxyCodeLine{705         reportError (\textcolor{stringliteral}{"{}ERROR: this AIFF file has an unsupported sample rate"{}});}
+\DoxyCodeLine{706         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{707     \}}
+\DoxyCodeLine{708     }
+\DoxyCodeLine{709     \textcolor{comment}{// check the number of channels is mono or stereo}}
+\DoxyCodeLine{710     \textcolor{keywordflow}{if} (numChannels < 1 ||numChannels > 2)}
+\DoxyCodeLine{711     \{}
+\DoxyCodeLine{712         reportError (\textcolor{stringliteral}{"{}ERROR: this AIFF file seems to be neither mono nor stereo (perhaps multi-\/track, or corrupted?)"{}});}
+\DoxyCodeLine{713         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{714     \}}
+\DoxyCodeLine{715     }
+\DoxyCodeLine{716     \textcolor{comment}{// check bit depth is either 8, 16, 24 or 32-\/bit}}
+\DoxyCodeLine{717     \textcolor{keywordflow}{if} (bitDepth != 8 \&\& bitDepth != 16 \&\& bitDepth != 24 \&\& bitDepth != 32)}
+\DoxyCodeLine{718     \{}
+\DoxyCodeLine{719         reportError (\textcolor{stringliteral}{"{}ERROR: this file has a bit depth that is not 8, 16, 24 or 32 bits"{}});}
+\DoxyCodeLine{720         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{721     \}}
+\DoxyCodeLine{722     }
+\DoxyCodeLine{723     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{724     \textcolor{comment}{// SSND CHUNK}}
+\DoxyCodeLine{725     \textcolor{keywordtype}{int} s = indexOfSoundDataChunk;}
+\DoxyCodeLine{726     std::string soundDataChunkID (fileData.begin() + s, fileData.begin() + s + 4);}
+\DoxyCodeLine{727     int32\_t soundDataChunkSize = fourBytesToInt (fileData, s + 4, Endianness::BigEndian);}
+\DoxyCodeLine{728     int32\_t offset = fourBytesToInt (fileData, s + 8, Endianness::BigEndian);}
+\DoxyCodeLine{729     \textcolor{comment}{//int32\_t blockSize = fourBytesToInt (fileData, s + 12, Endianness::BigEndian);}}
+\DoxyCodeLine{730     }
+\DoxyCodeLine{731     \textcolor{keywordtype}{int} numBytesPerSample = bitDepth / 8;}
+\DoxyCodeLine{732     \textcolor{keywordtype}{int} numBytesPerFrame = numBytesPerSample * numChannels;}
+\DoxyCodeLine{733     \textcolor{keywordtype}{int} totalNumAudioSampleBytes = numSamplesPerChannel * numBytesPerFrame;}
+\DoxyCodeLine{734     \textcolor{keywordtype}{int} samplesStartIndex = s + 16 + (int)offset;}
+\DoxyCodeLine{735         }
+\DoxyCodeLine{736     \textcolor{comment}{// sanity check the data}}
+\DoxyCodeLine{737     \textcolor{keywordflow}{if} ((soundDataChunkSize -\/ 8) != totalNumAudioSampleBytes || totalNumAudioSampleBytes > \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{long}\textcolor{keyword}{>}(fileData.size() -\/ samplesStartIndex))}
+\DoxyCodeLine{738     \{}
+\DoxyCodeLine{739         reportError (\textcolor{stringliteral}{"{}ERROR: the metadatafor this file doesn't seem right"{}});}
+\DoxyCodeLine{740         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{741     \}}
+\DoxyCodeLine{742     }
+\DoxyCodeLine{743     clearAudioBuffer();}
+\DoxyCodeLine{744     samples.resize (numChannels);}
+\DoxyCodeLine{745     }
+\DoxyCodeLine{746     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < numSamplesPerChannel; i++)}
+\DoxyCodeLine{747     \{}
+\DoxyCodeLine{748         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < numChannels; channel++)}
+\DoxyCodeLine{749         \{}
+\DoxyCodeLine{750             \textcolor{keywordtype}{int} sampleIndex = samplesStartIndex + (numBytesPerFrame * i) + channel * numBytesPerSample;}
+\DoxyCodeLine{751             }
+\DoxyCodeLine{752             \textcolor{keywordflow}{if} ((sampleIndex + (bitDepth / 8) -\/ 1) >= fileData.size())}
+\DoxyCodeLine{753             \{}
+\DoxyCodeLine{754                 reportError (\textcolor{stringliteral}{"{}ERROR: read file error as the metadata indicates more samples than there are in the file data"{}});}
+\DoxyCodeLine{755                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{756             \}}
+\DoxyCodeLine{757             }
+\DoxyCodeLine{758             \textcolor{keywordflow}{if} (bitDepth == 8)}
+\DoxyCodeLine{759             \{}
+\DoxyCodeLine{760                 int8\_t sampleAsSigned8Bit = (int8\_t)fileData[sampleIndex];}
+\DoxyCodeLine{761                 T sample = (T)sampleAsSigned8Bit / (T)128.;}
+\DoxyCodeLine{762                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{763             \}}
+\DoxyCodeLine{764             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
+\DoxyCodeLine{765             \{}
+\DoxyCodeLine{766                 int16\_t sampleAsInt = twoBytesToInt (fileData, sampleIndex, Endianness::BigEndian);}
+\DoxyCodeLine{767                 T sample = sixteenBitIntToSample (sampleAsInt);}
+\DoxyCodeLine{768                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{769             \}}
+\DoxyCodeLine{770             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
+\DoxyCodeLine{771             \{}
+\DoxyCodeLine{772                 int32\_t sampleAsInt = 0;}
+\DoxyCodeLine{773                 sampleAsInt = (fileData[sampleIndex] << 16) | (fileData[sampleIndex + 1] << 8) | fileData[sampleIndex + 2];}
+\DoxyCodeLine{774                 }
+\DoxyCodeLine{775                 \textcolor{keywordflow}{if} (sampleAsInt \& 0x800000) \textcolor{comment}{//  if the 24th bit is set, this is a negative number in 24-\/bit world}}
+\DoxyCodeLine{776                     sampleAsInt = sampleAsInt | \string~0xFFFFFF; \textcolor{comment}{// so make sure sign is extended to the 32 bit float}}
+\DoxyCodeLine{777                 }
+\DoxyCodeLine{778                 T sample = (T)sampleAsInt / (T)8388608.;}
+\DoxyCodeLine{779                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{780             \}}
+\DoxyCodeLine{781             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
+\DoxyCodeLine{782             \{}
+\DoxyCodeLine{783                 int32\_t sampleAsInt = fourBytesToInt (fileData, sampleIndex, Endianness::BigEndian);}
+\DoxyCodeLine{784                 T sample;}
+\DoxyCodeLine{785                 }
+\DoxyCodeLine{786                 \textcolor{keywordflow}{if} (audioFormat == AIFFAudioFormat::Compressed)}
+\DoxyCodeLine{787                     sample = (T)\textcolor{keyword}{reinterpret\_cast<}\textcolor{keywordtype}{float}\&\textcolor{keyword}{>} (sampleAsInt);}
+\DoxyCodeLine{788                 \textcolor{keywordflow}{else} \textcolor{comment}{// assume uncompressed}}
+\DoxyCodeLine{789                     sample = (T) sampleAsInt / \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{float}\textcolor{keyword}{>} (std::numeric\_limits<std::int32\_t>::max());}
+\DoxyCodeLine{790                     }
+\DoxyCodeLine{791                 samples[channel].push\_back (sample);}
+\DoxyCodeLine{792             \}}
+\DoxyCodeLine{793             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{794             \{}
+\DoxyCodeLine{795                 assert (\textcolor{keyword}{false});}
+\DoxyCodeLine{796             \}}
+\DoxyCodeLine{797         \}}
+\DoxyCodeLine{798     \}}
+\DoxyCodeLine{799 }
+\DoxyCodeLine{800     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{801     \textcolor{comment}{// iXML CHUNK}}
+\DoxyCodeLine{802     \textcolor{keywordflow}{if} (indexOfXMLChunk != -\/1)}
+\DoxyCodeLine{803     \{}
+\DoxyCodeLine{804         int32\_t chunkSize = fourBytesToInt (fileData, indexOfXMLChunk + 4);}
+\DoxyCodeLine{805         iXMLChunk = std::string ((\textcolor{keyword}{const} \textcolor{keywordtype}{char}*) \&fileData[indexOfXMLChunk + 8], chunkSize);}
+\DoxyCodeLine{806     \}}
+\DoxyCodeLine{807     }
+\DoxyCodeLine{808     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{809 \}}
+\DoxyCodeLine{810 }
+\DoxyCodeLine{811 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{812 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{813 uint32\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::getAiffSampleRate}} (std::vector<uint8\_t>\& fileData, \textcolor{keywordtype}{int} sampleRateStartIndex)}
+\DoxyCodeLine{814 \{}
+\DoxyCodeLine{815     \textcolor{keywordflow}{for} (\textcolor{keyword}{auto} it : aiffSampleRateTable)}
+\DoxyCodeLine{816     \{}
+\DoxyCodeLine{817         \textcolor{keywordflow}{if} (tenByteMatch (fileData, sampleRateStartIndex, it.second, 0))}
+\DoxyCodeLine{818             \textcolor{keywordflow}{return} it.first;}
+\DoxyCodeLine{819     \}}
+\DoxyCodeLine{820     }
+\DoxyCodeLine{821     \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{822 \}}
+\DoxyCodeLine{823 }
+\DoxyCodeLine{824 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{825 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{826 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::tenByteMatch}} (std::vector<uint8\_t>\& v1, \textcolor{keywordtype}{int} startIndex1, std::vector<uint8\_t>\& v2, \textcolor{keywordtype}{int} startIndex2)}
+\DoxyCodeLine{827 \{}
+\DoxyCodeLine{828     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 10; i++)}
+\DoxyCodeLine{829     \{}
+\DoxyCodeLine{830         \textcolor{keywordflow}{if} (v1[startIndex1 + i] != v2[startIndex2 + i])}
+\DoxyCodeLine{831             \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{832     \}}
+\DoxyCodeLine{833     }
+\DoxyCodeLine{834     \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{835 \}}
+\DoxyCodeLine{836 }
+\DoxyCodeLine{837 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{838 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{839 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addSampleRateToAiffData}} (std::vector<uint8\_t>\& fileData, uint32\_t sampleRate)}
+\DoxyCodeLine{840 \{}
+\DoxyCodeLine{841     \textcolor{keywordflow}{if} (aiffSampleRateTable.count (sampleRate) > 0)}
+\DoxyCodeLine{842     \{}
+\DoxyCodeLine{843         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 10; i++)}
+\DoxyCodeLine{844             fileData.push\_back (aiffSampleRateTable[sampleRate][i]);}
+\DoxyCodeLine{845     \}}
+\DoxyCodeLine{846 \}}
+\DoxyCodeLine{847 }
+\DoxyCodeLine{848 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{849 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{850 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile_a415239cad5b54b4fef4a210ab79911e3}{AudioFile<T>::save}} (std::string filePath, \mbox{\hyperlink{AudioFile_8h_ad18559d169602e85d0ad68da6ef8593f}{AudioFileFormat}} format)}
+\DoxyCodeLine{851 \{}
+\DoxyCodeLine{852     \textcolor{keywordflow}{if} (format == AudioFileFormat::Wave)}
+\DoxyCodeLine{853     \{}
+\DoxyCodeLine{854         \textcolor{keywordflow}{return} saveToWaveFile (filePath);}
+\DoxyCodeLine{855     \}}
+\DoxyCodeLine{856     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (format == AudioFileFormat::Aiff)}
+\DoxyCodeLine{857     \{}
+\DoxyCodeLine{858         \textcolor{keywordflow}{return} saveToAiffFile (filePath);}
+\DoxyCodeLine{859     \}}
+\DoxyCodeLine{860     }
+\DoxyCodeLine{861     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{862 \}}
+\DoxyCodeLine{863 }
+\DoxyCodeLine{864 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{865 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{866 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::saveToWaveFile}} (std::string filePath)}
+\DoxyCodeLine{867 \{}
+\DoxyCodeLine{868     std::vector<uint8\_t> fileData;}
+\DoxyCodeLine{869     }
+\DoxyCodeLine{870     int32\_t dataChunkSize = getNumSamplesPerChannel() * (getNumChannels() * bitDepth / 8);}
+\DoxyCodeLine{871     int16\_t audioFormat = bitDepth == 32 ? WavAudioFormat::IEEEFloat : WavAudioFormat::PCM;}
+\DoxyCodeLine{872     int32\_t formatChunkSize = audioFormat == WavAudioFormat::PCM ? 16 : 18;}
+\DoxyCodeLine{873     int32\_t iXMLChunkSize = \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (iXMLChunk.size());}
+\DoxyCodeLine{874     }
+\DoxyCodeLine{875     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{876     \textcolor{comment}{// HEADER CHUNK}}
+\DoxyCodeLine{877     addStringToFileData (fileData, \textcolor{stringliteral}{"{}RIFF"{}});}
+\DoxyCodeLine{878     }
+\DoxyCodeLine{879     \textcolor{comment}{// The file size in bytes is the header chunk size (4, not counting RIFF and WAVE) + the format}}
+\DoxyCodeLine{880     \textcolor{comment}{// chunk size (24) + the metadata part of the data chunk plus the actual data chunk size}}
+\DoxyCodeLine{881     int32\_t fileSizeInBytes = 4 + formatChunkSize + 8 + 8 + dataChunkSize;}
+\DoxyCodeLine{882     \textcolor{keywordflow}{if} (iXMLChunkSize > 0)}
+\DoxyCodeLine{883     \{}
+\DoxyCodeLine{884         fileSizeInBytes += (8 + iXMLChunkSize);}
+\DoxyCodeLine{885     \}}
+\DoxyCodeLine{886 }
+\DoxyCodeLine{887     addInt32ToFileData (fileData, fileSizeInBytes);}
+\DoxyCodeLine{888     }
+\DoxyCodeLine{889     addStringToFileData (fileData, \textcolor{stringliteral}{"{}WAVE"{}});}
+\DoxyCodeLine{890     }
+\DoxyCodeLine{891     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{892     \textcolor{comment}{// FORMAT CHUNK}}
+\DoxyCodeLine{893     addStringToFileData (fileData, \textcolor{stringliteral}{"{}fmt "{}});}
+\DoxyCodeLine{894     addInt32ToFileData (fileData, formatChunkSize); \textcolor{comment}{// format chunk size (16 for PCM)}}
+\DoxyCodeLine{895     addInt16ToFileData (fileData, audioFormat); \textcolor{comment}{// audio format}}
+\DoxyCodeLine{896     addInt16ToFileData (fileData, (int16\_t)getNumChannels()); \textcolor{comment}{// num channels}}
+\DoxyCodeLine{897     addInt32ToFileData (fileData, (int32\_t)sampleRate); \textcolor{comment}{// sample rate}}
+\DoxyCodeLine{898     }
+\DoxyCodeLine{899     int32\_t numBytesPerSecond = (int32\_t) ((getNumChannels() * sampleRate * bitDepth) / 8);}
+\DoxyCodeLine{900     addInt32ToFileData (fileData, numBytesPerSecond);}
+\DoxyCodeLine{901     }
+\DoxyCodeLine{902     int16\_t numBytesPerBlock = getNumChannels() * (bitDepth / 8);}
+\DoxyCodeLine{903     addInt16ToFileData (fileData, numBytesPerBlock);}
+\DoxyCodeLine{904     }
+\DoxyCodeLine{905     addInt16ToFileData (fileData, (int16\_t)bitDepth);}
+\DoxyCodeLine{906     }
+\DoxyCodeLine{907     \textcolor{keywordflow}{if} (audioFormat == WavAudioFormat::IEEEFloat)}
+\DoxyCodeLine{908         addInt16ToFileData (fileData, 0); \textcolor{comment}{// extension size}}
+\DoxyCodeLine{909     }
+\DoxyCodeLine{910     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{911     \textcolor{comment}{// DATA CHUNK}}
+\DoxyCodeLine{912     addStringToFileData (fileData, \textcolor{stringliteral}{"{}data"{}});}
+\DoxyCodeLine{913     addInt32ToFileData (fileData, dataChunkSize);}
+\DoxyCodeLine{914     }
+\DoxyCodeLine{915     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < getNumSamplesPerChannel(); i++)}
+\DoxyCodeLine{916     \{}
+\DoxyCodeLine{917         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < getNumChannels(); channel++)}
+\DoxyCodeLine{918         \{}
+\DoxyCodeLine{919             \textcolor{keywordflow}{if} (bitDepth == 8)}
+\DoxyCodeLine{920             \{}
+\DoxyCodeLine{921                 uint8\_t \textcolor{keywordtype}{byte} = sampleToSingleByte (samples[channel][i]);}
+\DoxyCodeLine{922                 fileData.push\_back (\textcolor{keywordtype}{byte});}
+\DoxyCodeLine{923             \}}
+\DoxyCodeLine{924             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
+\DoxyCodeLine{925             \{}
+\DoxyCodeLine{926                 int16\_t sampleAsInt = sampleToSixteenBitInt (samples[channel][i]);}
+\DoxyCodeLine{927                 addInt16ToFileData (fileData, sampleAsInt);}
+\DoxyCodeLine{928             \}}
+\DoxyCodeLine{929             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
+\DoxyCodeLine{930             \{}
+\DoxyCodeLine{931                 int32\_t sampleAsIntAgain = (int32\_t) (samples[channel][i] * (T)8388608.);}
+\DoxyCodeLine{932                 }
+\DoxyCodeLine{933                 uint8\_t bytes[3];}
+\DoxyCodeLine{934                 bytes[2] = (uint8\_t) (sampleAsIntAgain >> 16) \& 0xFF;}
+\DoxyCodeLine{935                 bytes[1] = (uint8\_t) (sampleAsIntAgain >>  8) \& 0xFF;}
+\DoxyCodeLine{936                 bytes[0] = (uint8\_t) sampleAsIntAgain \& 0xFF;}
+\DoxyCodeLine{937                 }
+\DoxyCodeLine{938                 fileData.push\_back (bytes[0]);}
+\DoxyCodeLine{939                 fileData.push\_back (bytes[1]);}
+\DoxyCodeLine{940                 fileData.push\_back (bytes[2]);}
+\DoxyCodeLine{941             \}}
+\DoxyCodeLine{942             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
+\DoxyCodeLine{943             \{}
+\DoxyCodeLine{944                 int32\_t sampleAsInt;}
+\DoxyCodeLine{945                 }
+\DoxyCodeLine{946                 \textcolor{keywordflow}{if} (audioFormat == WavAudioFormat::IEEEFloat)}
+\DoxyCodeLine{947                     sampleAsInt = (int32\_t) \textcolor{keyword}{reinterpret\_cast<}int32\_t\&\textcolor{keyword}{>} (samples[channel][i]);}
+\DoxyCodeLine{948                 \textcolor{keywordflow}{else} \textcolor{comment}{// assume PCM}}
+\DoxyCodeLine{949                     sampleAsInt = (int32\_t) (samples[channel][i] * std::numeric\_limits<int32\_t>::max());}
+\DoxyCodeLine{950                 }
+\DoxyCodeLine{951                 addInt32ToFileData (fileData, sampleAsInt, Endianness::LittleEndian);}
+\DoxyCodeLine{952             \}}
+\DoxyCodeLine{953             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{954             \{}
+\DoxyCodeLine{955                 assert (\textcolor{keyword}{false} \&\& \textcolor{stringliteral}{"{}Trying to write a file with unsupported bit depth"{}});}
+\DoxyCodeLine{956                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{957             \}}
+\DoxyCodeLine{958         \}}
+\DoxyCodeLine{959     \}}
+\DoxyCodeLine{960     }
+\DoxyCodeLine{961     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{962     \textcolor{comment}{// iXML CHUNK}}
+\DoxyCodeLine{963     \textcolor{keywordflow}{if} (iXMLChunkSize > 0) }
+\DoxyCodeLine{964     \{}
+\DoxyCodeLine{965         addStringToFileData (fileData, \textcolor{stringliteral}{"{}iXML"{}});}
+\DoxyCodeLine{966         addInt32ToFileData (fileData, iXMLChunkSize);}
+\DoxyCodeLine{967         addStringToFileData (fileData, iXMLChunk);}
+\DoxyCodeLine{968     \}}
+\DoxyCodeLine{969     }
+\DoxyCodeLine{970     \textcolor{comment}{// check that the various sizes we put in the metadata are correct}}
+\DoxyCodeLine{971     \textcolor{keywordflow}{if} (fileSizeInBytes != \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (fileData.size() -\/ 8) || dataChunkSize != (getNumSamplesPerChannel() * getNumChannels() * (bitDepth / 8)))}
+\DoxyCodeLine{972     \{}
+\DoxyCodeLine{973         reportError (\textcolor{stringliteral}{"{}ERROR: couldn't save file to "{}} + filePath);}
+\DoxyCodeLine{974         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{975     \}}
+\DoxyCodeLine{976     }
+\DoxyCodeLine{977     \textcolor{comment}{// try to write the file}}
+\DoxyCodeLine{978     \textcolor{keywordflow}{return} writeDataToFile (fileData, filePath);}
+\DoxyCodeLine{979 \}}
+\DoxyCodeLine{980 }
+\DoxyCodeLine{981 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{982 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{983 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::saveToAiffFile}} (std::string filePath)}
+\DoxyCodeLine{984 \{}
+\DoxyCodeLine{985     std::vector<uint8\_t> fileData;}
+\DoxyCodeLine{986     }
+\DoxyCodeLine{987     int32\_t numBytesPerSample = bitDepth / 8;}
+\DoxyCodeLine{988     int32\_t numBytesPerFrame = numBytesPerSample * getNumChannels();}
+\DoxyCodeLine{989     int32\_t totalNumAudioSampleBytes = getNumSamplesPerChannel() * numBytesPerFrame;}
+\DoxyCodeLine{990     int32\_t soundDataChunkSize = totalNumAudioSampleBytes + 8;}
+\DoxyCodeLine{991     int32\_t iXMLChunkSize = \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (iXMLChunk.size());}
+\DoxyCodeLine{992     }
+\DoxyCodeLine{993     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{994     \textcolor{comment}{// HEADER CHUNK}}
+\DoxyCodeLine{995     addStringToFileData (fileData, \textcolor{stringliteral}{"{}FORM"{}});}
+\DoxyCodeLine{996     }
+\DoxyCodeLine{997     \textcolor{comment}{// The file size in bytes is the header chunk size (4, not counting FORM and AIFF) + the COMM}}
+\DoxyCodeLine{998     \textcolor{comment}{// chunk size (26) + the metadata part of the SSND chunk plus the actual data chunk size}}
+\DoxyCodeLine{999     int32\_t fileSizeInBytes = 4 + 26 + 16 + totalNumAudioSampleBytes;}
+\DoxyCodeLine{1000     \textcolor{keywordflow}{if} (iXMLChunkSize > 0)}
+\DoxyCodeLine{1001     \{}
+\DoxyCodeLine{1002         fileSizeInBytes += (8 + iXMLChunkSize);}
+\DoxyCodeLine{1003     \}}
+\DoxyCodeLine{1004 }
+\DoxyCodeLine{1005     addInt32ToFileData (fileData, fileSizeInBytes, Endianness::BigEndian);}
+\DoxyCodeLine{1006     }
+\DoxyCodeLine{1007     addStringToFileData (fileData, \textcolor{stringliteral}{"{}AIFF"{}});}
+\DoxyCodeLine{1008     }
+\DoxyCodeLine{1009     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{1010     \textcolor{comment}{// COMM CHUNK}}
+\DoxyCodeLine{1011     addStringToFileData (fileData, \textcolor{stringliteral}{"{}COMM"{}});}
+\DoxyCodeLine{1012     addInt32ToFileData (fileData, 18, Endianness::BigEndian); \textcolor{comment}{// commChunkSize}}
+\DoxyCodeLine{1013     addInt16ToFileData (fileData, getNumChannels(), Endianness::BigEndian); \textcolor{comment}{// num channels}}
+\DoxyCodeLine{1014     addInt32ToFileData (fileData, getNumSamplesPerChannel(), Endianness::BigEndian); \textcolor{comment}{// num samples per channel}}
+\DoxyCodeLine{1015     addInt16ToFileData (fileData, bitDepth, Endianness::BigEndian); \textcolor{comment}{// bit depth}}
+\DoxyCodeLine{1016     addSampleRateToAiffData (fileData, sampleRate);}
+\DoxyCodeLine{1017     }
+\DoxyCodeLine{1018     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{1019     \textcolor{comment}{// SSND CHUNK}}
+\DoxyCodeLine{1020     addStringToFileData (fileData, \textcolor{stringliteral}{"{}SSND"{}});}
+\DoxyCodeLine{1021     addInt32ToFileData (fileData, soundDataChunkSize, Endianness::BigEndian);}
+\DoxyCodeLine{1022     addInt32ToFileData (fileData, 0, Endianness::BigEndian); \textcolor{comment}{// offset}}
+\DoxyCodeLine{1023     addInt32ToFileData (fileData, 0, Endianness::BigEndian); \textcolor{comment}{// block size}}
+\DoxyCodeLine{1024     }
+\DoxyCodeLine{1025     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < getNumSamplesPerChannel(); i++)}
+\DoxyCodeLine{1026     \{}
+\DoxyCodeLine{1027         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} channel = 0; channel < getNumChannels(); channel++)}
+\DoxyCodeLine{1028         \{}
+\DoxyCodeLine{1029             \textcolor{keywordflow}{if} (bitDepth == 8)}
+\DoxyCodeLine{1030             \{}
+\DoxyCodeLine{1031                 uint8\_t \textcolor{keywordtype}{byte} = sampleToSingleByte (samples[channel][i]);}
+\DoxyCodeLine{1032                 fileData.push\_back (\textcolor{keywordtype}{byte});}
+\DoxyCodeLine{1033             \}}
+\DoxyCodeLine{1034             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 16)}
+\DoxyCodeLine{1035             \{}
+\DoxyCodeLine{1036                 int16\_t sampleAsInt = sampleToSixteenBitInt (samples[channel][i]);}
+\DoxyCodeLine{1037                 addInt16ToFileData (fileData, sampleAsInt, Endianness::BigEndian);}
+\DoxyCodeLine{1038             \}}
+\DoxyCodeLine{1039             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 24)}
+\DoxyCodeLine{1040             \{}
+\DoxyCodeLine{1041                 int32\_t sampleAsIntAgain = (int32\_t) (samples[channel][i] * (T)8388608.);}
+\DoxyCodeLine{1042                 }
+\DoxyCodeLine{1043                 uint8\_t bytes[3];}
+\DoxyCodeLine{1044                 bytes[0] = (uint8\_t) (sampleAsIntAgain >> 16) \& 0xFF;}
+\DoxyCodeLine{1045                 bytes[1] = (uint8\_t) (sampleAsIntAgain >>  8) \& 0xFF;}
+\DoxyCodeLine{1046                 bytes[2] = (uint8\_t) sampleAsIntAgain \& 0xFF;}
+\DoxyCodeLine{1047                 }
+\DoxyCodeLine{1048                 fileData.push\_back (bytes[0]);}
+\DoxyCodeLine{1049                 fileData.push\_back (bytes[1]);}
+\DoxyCodeLine{1050                 fileData.push\_back (bytes[2]);}
+\DoxyCodeLine{1051             \}}
+\DoxyCodeLine{1052             \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (bitDepth == 32)}
+\DoxyCodeLine{1053             \{}
+\DoxyCodeLine{1054                 \textcolor{comment}{// write samples as signed integers (no implementation yet for floating point, but looking at WAV implementation should help)}}
+\DoxyCodeLine{1055                 int32\_t sampleAsInt = (int32\_t) (samples[channel][i] * std::numeric\_limits<int32\_t>::max());}
+\DoxyCodeLine{1056                 addInt32ToFileData (fileData, sampleAsInt, Endianness::BigEndian);}
+\DoxyCodeLine{1057             \}}
+\DoxyCodeLine{1058             \textcolor{keywordflow}{else}}
+\DoxyCodeLine{1059             \{}
+\DoxyCodeLine{1060                 assert (\textcolor{keyword}{false} \&\& \textcolor{stringliteral}{"{}Trying to write a file with unsupported bit depth"{}});}
+\DoxyCodeLine{1061                 \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{1062             \}}
+\DoxyCodeLine{1063         \}}
+\DoxyCodeLine{1064     \}}
+\DoxyCodeLine{1065 }
+\DoxyCodeLine{1066     \textcolor{comment}{// -\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}}
+\DoxyCodeLine{1067     \textcolor{comment}{// iXML CHUNK}}
+\DoxyCodeLine{1068     \textcolor{keywordflow}{if} (iXMLChunkSize > 0)}
+\DoxyCodeLine{1069     \{}
+\DoxyCodeLine{1070         addStringToFileData (fileData, \textcolor{stringliteral}{"{}iXML"{}});}
+\DoxyCodeLine{1071         addInt32ToFileData (fileData, iXMLChunkSize, Endianness::BigEndian);}
+\DoxyCodeLine{1072         addStringToFileData (fileData, iXMLChunk);}
+\DoxyCodeLine{1073     \}}
+\DoxyCodeLine{1074     }
+\DoxyCodeLine{1075     \textcolor{comment}{// check that the various sizes we put in the metadata are correct}}
+\DoxyCodeLine{1076     \textcolor{keywordflow}{if} (fileSizeInBytes != \textcolor{keyword}{static\_cast<}int32\_t\textcolor{keyword}{>} (fileData.size() -\/ 8) || soundDataChunkSize != getNumSamplesPerChannel() *  numBytesPerFrame + 8)}
+\DoxyCodeLine{1077     \{}
+\DoxyCodeLine{1078         reportError (\textcolor{stringliteral}{"{}ERROR: couldn't save file to "{}} + filePath);}
+\DoxyCodeLine{1079         \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{1080     \}}
+\DoxyCodeLine{1081     }
+\DoxyCodeLine{1082     \textcolor{comment}{// try to write the file}}
+\DoxyCodeLine{1083     \textcolor{keywordflow}{return} writeDataToFile (fileData, filePath);}
+\DoxyCodeLine{1084 \}}
+\DoxyCodeLine{1085 }
+\DoxyCodeLine{1086 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1087 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1088 \textcolor{keywordtype}{bool} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::writeDataToFile}} (std::vector<uint8\_t>\& fileData, std::string filePath)}
+\DoxyCodeLine{1089 \{}
+\DoxyCodeLine{1090     std::ofstream outputFile (filePath, std::ios::binary);}
+\DoxyCodeLine{1091     }
+\DoxyCodeLine{1092     \textcolor{keywordflow}{if} (outputFile.is\_open())}
+\DoxyCodeLine{1093     \{}
+\DoxyCodeLine{1094         \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < fileData.size(); i++)}
+\DoxyCodeLine{1095         \{}
+\DoxyCodeLine{1096             \textcolor{keywordtype}{char} value = (char) fileData[i];}
+\DoxyCodeLine{1097             outputFile.write (\&value, \textcolor{keyword}{sizeof} (\textcolor{keywordtype}{char}));}
+\DoxyCodeLine{1098         \}}
+\DoxyCodeLine{1099         }
+\DoxyCodeLine{1100         outputFile.close();}
+\DoxyCodeLine{1101         }
+\DoxyCodeLine{1102         \textcolor{keywordflow}{return} \textcolor{keyword}{true};}
+\DoxyCodeLine{1103     \}}
+\DoxyCodeLine{1104     }
+\DoxyCodeLine{1105     \textcolor{keywordflow}{return} \textcolor{keyword}{false};}
+\DoxyCodeLine{1106 \}}
+\DoxyCodeLine{1107 }
+\DoxyCodeLine{1108 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1109 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1110 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addStringToFileData}} (std::vector<uint8\_t>\& fileData, std::string s)}
+\DoxyCodeLine{1111 \{}
+\DoxyCodeLine{1112     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < s.length();i++)}
+\DoxyCodeLine{1113         fileData.push\_back ((uint8\_t) s[i]);}
+\DoxyCodeLine{1114 \}}
+\DoxyCodeLine{1115 }
+\DoxyCodeLine{1116 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1117 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1118 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addInt32ToFileData}} (std::vector<uint8\_t>\& fileData, int32\_t i, Endianness endianness)}
+\DoxyCodeLine{1119 \{}
+\DoxyCodeLine{1120     uint8\_t bytes[4];}
+\DoxyCodeLine{1121     }
+\DoxyCodeLine{1122     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
+\DoxyCodeLine{1123     \{}
+\DoxyCodeLine{1124         bytes[3] = (i >> 24) \& 0xFF;}
+\DoxyCodeLine{1125         bytes[2] = (i >> 16) \& 0xFF;}
+\DoxyCodeLine{1126         bytes[1] = (i >> 8) \& 0xFF;}
+\DoxyCodeLine{1127         bytes[0] = i \& 0xFF;}
+\DoxyCodeLine{1128     \}}
+\DoxyCodeLine{1129     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{1130     \{}
+\DoxyCodeLine{1131         bytes[0] = (i >> 24) \& 0xFF;}
+\DoxyCodeLine{1132         bytes[1] = (i >> 16) \& 0xFF;}
+\DoxyCodeLine{1133         bytes[2] = (i >> 8) \& 0xFF;}
+\DoxyCodeLine{1134         bytes[3] = i \& 0xFF;}
+\DoxyCodeLine{1135     \}}
+\DoxyCodeLine{1136     }
+\DoxyCodeLine{1137     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 4; i++)}
+\DoxyCodeLine{1138         fileData.push\_back (bytes[i]);}
+\DoxyCodeLine{1139 \}}
+\DoxyCodeLine{1140 }
+\DoxyCodeLine{1141 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1142 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1143 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::addInt16ToFileData}} (std::vector<uint8\_t>\& fileData, int16\_t i, Endianness endianness)}
+\DoxyCodeLine{1144 \{}
+\DoxyCodeLine{1145     uint8\_t bytes[2];}
+\DoxyCodeLine{1146     }
+\DoxyCodeLine{1147     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
+\DoxyCodeLine{1148     \{}
+\DoxyCodeLine{1149         bytes[1] = (i >> 8) \& 0xFF;}
+\DoxyCodeLine{1150         bytes[0] = i \& 0xFF;}
+\DoxyCodeLine{1151     \}}
+\DoxyCodeLine{1152     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{1153     \{}
+\DoxyCodeLine{1154         bytes[0] = (i >> 8) \& 0xFF;}
+\DoxyCodeLine{1155         bytes[1] = i \& 0xFF;}
+\DoxyCodeLine{1156     \}}
+\DoxyCodeLine{1157     }
+\DoxyCodeLine{1158     fileData.push\_back (bytes[0]);}
+\DoxyCodeLine{1159     fileData.push\_back (bytes[1]);}
+\DoxyCodeLine{1160 \}}
+\DoxyCodeLine{1161 }
+\DoxyCodeLine{1162 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1163 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1164 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::clearAudioBuffer}}()}
+\DoxyCodeLine{1165 \{}
+\DoxyCodeLine{1166     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < samples.size();i++)}
+\DoxyCodeLine{1167     \{}
+\DoxyCodeLine{1168         samples[i].clear();}
+\DoxyCodeLine{1169     \}}
+\DoxyCodeLine{1170     }
+\DoxyCodeLine{1171     samples.clear();}
+\DoxyCodeLine{1172 \}}
+\DoxyCodeLine{1173 }
+\DoxyCodeLine{1174 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1175 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1176 \mbox{\hyperlink{AudioFile_8h_ad18559d169602e85d0ad68da6ef8593f}{AudioFileFormat}} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::determineAudioFileFormat}} (std::vector<uint8\_t>\& fileData)}
+\DoxyCodeLine{1177 \{}
+\DoxyCodeLine{1178     std::string header (fileData.begin(), fileData.begin() + 4);}
+\DoxyCodeLine{1179     }
+\DoxyCodeLine{1180     \textcolor{keywordflow}{if} (header == \textcolor{stringliteral}{"{}RIFF"{}})}
+\DoxyCodeLine{1181         \textcolor{keywordflow}{return} AudioFileFormat::Wave;}
+\DoxyCodeLine{1182     \textcolor{keywordflow}{else} \textcolor{keywordflow}{if} (header == \textcolor{stringliteral}{"{}FORM"{}})}
+\DoxyCodeLine{1183         \textcolor{keywordflow}{return} AudioFileFormat::Aiff;}
+\DoxyCodeLine{1184     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{1185         \textcolor{keywordflow}{return} AudioFileFormat::Error;}
+\DoxyCodeLine{1186 \}}
+\DoxyCodeLine{1187 }
+\DoxyCodeLine{1188 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1189 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1190 int32\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::fourBytesToInt}} (std::vector<uint8\_t>\& source, \textcolor{keywordtype}{int} startIndex, Endianness endianness)}
+\DoxyCodeLine{1191 \{}
+\DoxyCodeLine{1192     int32\_t result;}
+\DoxyCodeLine{1193     }
+\DoxyCodeLine{1194     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
+\DoxyCodeLine{1195         result = (source[startIndex + 3] << 24) | (source[startIndex + 2] << 16) | (source[startIndex + 1] << 8) | source[startIndex];}
+\DoxyCodeLine{1196     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{1197         result = (source[startIndex] << 24) | (source[startIndex + 1] << 16) | (source[startIndex + 2] << 8) | source[startIndex + 3];}
+\DoxyCodeLine{1198     }
+\DoxyCodeLine{1199     \textcolor{keywordflow}{return} result;}
+\DoxyCodeLine{1200 \}}
+\DoxyCodeLine{1201 }
+\DoxyCodeLine{1202 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1203 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1204 int16\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::twoBytesToInt}} (std::vector<uint8\_t>\& source, \textcolor{keywordtype}{int} startIndex, Endianness endianness)}
+\DoxyCodeLine{1205 \{}
+\DoxyCodeLine{1206     int16\_t result;}
+\DoxyCodeLine{1207     }
+\DoxyCodeLine{1208     \textcolor{keywordflow}{if} (endianness == Endianness::LittleEndian)}
+\DoxyCodeLine{1209         result = (source[startIndex + 1] << 8) | source[startIndex];}
+\DoxyCodeLine{1210     \textcolor{keywordflow}{else}}
+\DoxyCodeLine{1211         result = (source[startIndex] << 8) | source[startIndex + 1];}
+\DoxyCodeLine{1212     }
+\DoxyCodeLine{1213     \textcolor{keywordflow}{return} result;}
+\DoxyCodeLine{1214 \}}
+\DoxyCodeLine{1215 }
+\DoxyCodeLine{1216 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1217 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1218 \textcolor{keywordtype}{int} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::getIndexOfString}} (std::vector<uint8\_t>\& source, std::string stringToSearchFor)}
+\DoxyCodeLine{1219 \{}
+\DoxyCodeLine{1220     \textcolor{keywordtype}{int} index = -\/1;}
+\DoxyCodeLine{1221     \textcolor{keywordtype}{int} stringLength = (int)stringToSearchFor.length();}
+\DoxyCodeLine{1222     }
+\DoxyCodeLine{1223     \textcolor{keywordflow}{for} (\textcolor{keywordtype}{size\_t} i = 0; i < source.size() -\/ stringLength;i++)}
+\DoxyCodeLine{1224     \{}
+\DoxyCodeLine{1225         std::string section (source.begin() + i, source.begin() + i + stringLength);}
+\DoxyCodeLine{1226         }
+\DoxyCodeLine{1227         \textcolor{keywordflow}{if} (section == stringToSearchFor)}
+\DoxyCodeLine{1228         \{}
+\DoxyCodeLine{1229             index = \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>} (i);}
+\DoxyCodeLine{1230             \textcolor{keywordflow}{break};}
+\DoxyCodeLine{1231         \}}
+\DoxyCodeLine{1232     \}}
+\DoxyCodeLine{1233     }
+\DoxyCodeLine{1234     \textcolor{keywordflow}{return} index;}
+\DoxyCodeLine{1235 \}}
+\DoxyCodeLine{1236 }
+\DoxyCodeLine{1237 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1238 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1239 \textcolor{keywordtype}{int} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::getIndexOfChunk}} (std::vector<uint8\_t>\& source, \textcolor{keyword}{const} std::string\& chunkHeaderID, \textcolor{keywordtype}{int} startIndex, Endianness endianness)}
+\DoxyCodeLine{1240 \{}
+\DoxyCodeLine{1241     \textcolor{keyword}{constexpr} \textcolor{keywordtype}{int} dataLen = 4;}
+\DoxyCodeLine{1242     \textcolor{keywordflow}{if} (chunkHeaderID.size() != dataLen)}
+\DoxyCodeLine{1243     \{}
+\DoxyCodeLine{1244         assert (\textcolor{keyword}{false} \&\& \textcolor{stringliteral}{"{}Invalid chunk header ID string"{}});}
+\DoxyCodeLine{1245         \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{1246     \}}
+\DoxyCodeLine{1247 }
+\DoxyCodeLine{1248     \textcolor{keywordtype}{int} i = startIndex;}
+\DoxyCodeLine{1249     \textcolor{keywordflow}{while} (i < source.size() -\/ dataLen)}
+\DoxyCodeLine{1250     \{}
+\DoxyCodeLine{1251         \textcolor{keywordflow}{if} (memcmp (\&source[i], chunkHeaderID.data(), dataLen) == 0)}
+\DoxyCodeLine{1252         \{}
+\DoxyCodeLine{1253             \textcolor{keywordflow}{return} i;}
+\DoxyCodeLine{1254         \}}
+\DoxyCodeLine{1255 }
+\DoxyCodeLine{1256         i += dataLen;}
+\DoxyCodeLine{1257         \textcolor{keyword}{auto} chunkSize = fourBytesToInt (source, i, endianness);}
+\DoxyCodeLine{1258         i += (dataLen + chunkSize);}
+\DoxyCodeLine{1259     \}}
+\DoxyCodeLine{1260 }
+\DoxyCodeLine{1261     \textcolor{keywordflow}{return} -\/1;}
+\DoxyCodeLine{1262 \}}
+\DoxyCodeLine{1263 }
+\DoxyCodeLine{1264 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1265 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1266 T \mbox{\hyperlink{classAudioFile}{AudioFile<T>::sixteenBitIntToSample}} (int16\_t sample)}
+\DoxyCodeLine{1267 \{}
+\DoxyCodeLine{1268     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (sample) / \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (32768.);}
+\DoxyCodeLine{1269 \}}
+\DoxyCodeLine{1270 }
+\DoxyCodeLine{1271 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1272 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1273 int16\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::sampleToSixteenBitInt}} (T sample)}
+\DoxyCodeLine{1274 \{}
+\DoxyCodeLine{1275     sample = clamp (sample, -\/1., 1.);}
+\DoxyCodeLine{1276     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}int16\_t\textcolor{keyword}{>} (sample * 32767.);}
+\DoxyCodeLine{1277 \}}
+\DoxyCodeLine{1278 }
+\DoxyCodeLine{1279 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1280 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1281 uint8\_t \mbox{\hyperlink{classAudioFile}{AudioFile<T>::sampleToSingleByte}} (T sample)}
+\DoxyCodeLine{1282 \{}
+\DoxyCodeLine{1283     sample = clamp (sample, -\/1., 1.);}
+\DoxyCodeLine{1284     sample = (sample + 1.) / 2.;}
+\DoxyCodeLine{1285     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}uint8\_t\textcolor{keyword}{>} (sample * 255.);}
+\DoxyCodeLine{1286 \}}
+\DoxyCodeLine{1287 }
+\DoxyCodeLine{1288 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1289 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1290 T \mbox{\hyperlink{classAudioFile}{AudioFile<T>::singleByteToSample}} (uint8\_t sample)}
+\DoxyCodeLine{1291 \{}
+\DoxyCodeLine{1292     \textcolor{keywordflow}{return} \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (sample -\/ 128) / \textcolor{keyword}{static\_cast<}T\textcolor{keyword}{>} (128.);}
+\DoxyCodeLine{1293 \}}
+\DoxyCodeLine{1294 }
+\DoxyCodeLine{1295 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1296 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1297 T \mbox{\hyperlink{classAudioFile}{AudioFile<T>::clamp}} (T value, T minValue, T maxValue)}
+\DoxyCodeLine{1298 \{}
+\DoxyCodeLine{1299     value = std::min (value, maxValue);}
+\DoxyCodeLine{1300     value = std::max (value, minValue);}
+\DoxyCodeLine{1301     \textcolor{keywordflow}{return} value;}
+\DoxyCodeLine{1302 \}}
+\DoxyCodeLine{1303 }
+\DoxyCodeLine{1304 \textcolor{comment}{//=============================================================}}
+\DoxyCodeLine{1305 \textcolor{keyword}{template} <\textcolor{keyword}{class} T>}
+\DoxyCodeLine{1306 \textcolor{keywordtype}{void} \mbox{\hyperlink{classAudioFile}{AudioFile<T>::reportError}} (std::string errorMessage)}
+\DoxyCodeLine{1307 \{}
+\DoxyCodeLine{1308     \textcolor{keywordflow}{if} (logErrorsToConsole)}
+\DoxyCodeLine{1309         std::cout << errorMessage << std::endl;}
+\DoxyCodeLine{1310 \}}
+\DoxyCodeLine{1311 }
+\DoxyCodeLine{1312 \textcolor{preprocessor}{\#if defined (\_MSC\_VER)}}
+\DoxyCodeLine{1313     \_\_pragma(warning (pop))}
+\DoxyCodeLine{1314 \textcolor{preprocessor}{\#elif defined (\_\_GNUC\_\_)}}
+\DoxyCodeLine{1315     \_Pragma(\textcolor{stringliteral}{"{}GCC diagnostic pop"{}})}
+\DoxyCodeLine{1316 \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{1317 }
+\DoxyCodeLine{1318 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/* AudioFile\_h */}\textcolor{preprocessor}{}}
 
 \end{DoxyCode}
