@@ -484,7 +484,6 @@ bool AudioFile<T>::load (std::string filePath)
 	file.seekg (0, std::ios::end);
 	size_t length = file.tellg();
 	file.seekg (0, std::ios::beg);
-    std::cout << "len: " << length;
 	// allocate
 	fileData.resize (length);
 
