@@ -3,7 +3,6 @@
 #include <sys/stat.h>
 
 #define NLAYERS 6
-#define FS 44200
 
 SignalCleaner::SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, double learning_rate){
     if(!FileExists(noisey_signal_path)){
@@ -22,7 +21,7 @@ SignalCleaner::SignalCleaner(std::string noisey_signal_path, std::string noise_s
     }
     internal_fir = new Fir1(nr_taps);
     internal_fir->setLearningRate(learning_rate);
-    internal_dnf = new DNF(NLAYERS, learning_rate, FS, Neuron::Act_Tanh);
+    internal_dnf = new DNF(NLAYERS, nr_taps, (double)noisey_signal.getSampleRate(), Neuron::Act_Tanh);
 }
 
 void SignalCleaner::FilterFir1() {
@@ -47,7 +46,10 @@ void SignalCleaner::FilterDnf() {
         for(int sample_idx = 0; sample_idx < output.getNumSamplesPerChannel(); sample_idx++){
             double noisey_sample = noisey_signal.samples[channel_idx][sample_idx];
             double noise_sample = noise_source.samples[channel_idx%nr_noise_channels][sample_idx%len_noise];
-            output.samples[channel_idx][sample_idx] = internal_dnf->filter(noise_sample, noise_sample);
+            double cancelled = internal_dnf->filter(noisey_sample, noise_sample);
+            //printf("\rcancelled: %f, noisey sample: %f noise sample: %f", cancelled, noisey_sample, noise_sample);
+            output.samples[channel_idx][sample_idx] = cancelled;
+            //printf("\r sample index: %d", sample_idx);
         }
     }
 }

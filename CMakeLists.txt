@@ -15,6 +15,7 @@ add_subdirectory(demo)
 add_subdirectory(test)
 add_subdirectory(correlate)
 add_subdirectory(SignalCleaner)
+add_subdirectory(deepNeuronalFilter)
 
 cmake_policy(SET CMP0048 NEW) # set VERSION in project()
 cmake_policy(SET CMP0042 NEW) # enable MACOSX_RPATH by default
