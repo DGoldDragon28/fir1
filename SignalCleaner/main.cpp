@@ -1,7 +1,7 @@
 #include "SignalCleaner.h"
 #include <cstdlib>
 
-#define PRINT_USAGE(n) (std::cerr << "Usage: " << n << "[-l <lrate>] [-n <ntaps>] [-o <file>] <noise-source> [<input>]" << std::endl)
+#define PRINT_USAGE(n) (std::cerr << "Usage: " << n << "[-l <lrate>] [-n <ntaps>] [-o <file>] [-d | -f] <noise-source> [<input>]" << std::endl)
 
 int main(int argc, char ** argv) {
     std::string paths[2];
