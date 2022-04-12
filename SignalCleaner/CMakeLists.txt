@@ -11,6 +11,6 @@ link_directories(../deepNeuronalFilter)
 
 set(SOURCES main.cpp SignalCleaner.cpp ../Fir1.cpp )
 add_executable(signal-cleaner ${SOURCES} )
-target_link_libraries(signal-cleaner dnf iir fir)
+target_link_libraries(signal-cleaner dnf)
 
 target_include_directories(signal-cleaner PRIVATE ..)
