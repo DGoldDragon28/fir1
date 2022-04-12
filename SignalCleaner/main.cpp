@@ -42,7 +42,7 @@ int main(int argc, char ** argv) {
     }
 
     SignalCleaner cleaner(paths[1], paths[0], ntaps, lrate);
-    cleaner.Filter();
+    cleaner.FilterFir1();
     cleaner.SaveFiltered(has_outpath ? outpath : "/dev/stdout");
 }
 

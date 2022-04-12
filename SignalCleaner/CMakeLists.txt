@@ -6,8 +6,11 @@ set (CMAKE_CXX_STANDARD 11)
 find_package(Boost REQUIRED)
 message("Boost found: ${Boost_FOUND}")
 
-set(SOURCES main.cpp SignalCleaner.cpp ../Fir1.cpp ../deepNeuronalFilter/dnf.h)
-add_executable(signal-cleaner ${SOURCES})
-target_link_libraries(signal-cleaner iir fir)
+include_directories(../deepNeuronalFilter)
+link_directories(../deepNeuronalFilter)
+
+set(SOURCES main.cpp SignalCleaner.cpp ../Fir1.cpp )
+add_executable(signal-cleaner ${SOURCES} )
+target_link_libraries(signal-cleaner dnf iir fir)
 
 target_include_directories(signal-cleaner PRIVATE ..)
