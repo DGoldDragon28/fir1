@@ -11,6 +11,8 @@ int main(int argc, char ** argv) {
     paths[1] = "/dev/stdin";
     std::string outpath;
     bool has_outpath = false;
+    bool use_dnf = false;
+    
 
     for(i = 1; i < argc; i++) {
         if(argv[i][0] != '-') {
@@ -31,6 +33,13 @@ int main(int argc, char ** argv) {
                 outpath = (argv[i][2] ? &argv[i][2] : argv[++i]);
                 has_outpath = true;
                 break;
+            case 'd':
+                use_dnf = true;
+                break;
+            case 'f':
+                use_dnf = false;
+                break;
+                
             default:
                 PRINT_USAGE(argv[0]);
                 return EXIT_FAILURE;
@@ -42,7 +51,12 @@ int main(int argc, char ** argv) {
     }
 
     SignalCleaner cleaner(paths[1], paths[0], ntaps, lrate);
-    cleaner.FilterFir1();
+    if(use_dnf){
+        cleaner.FilterDnf();
+    }
+    else{
+        cleaner.FilterFir1();
+    }
     cleaner.SaveFiltered(has_outpath ? outpath : "/dev/stdout");
 }
 
