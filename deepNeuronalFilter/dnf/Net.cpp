@@ -114,7 +114,7 @@ void Net::propErrorBackward(){
 				sum += (tempError * tempWeight);
 			}
 			assert(std::isfinite(sum));
-			assert(std::isfinite(weightSumer));
+			//assert(std::isfinite(weightSumer));
 			layers[i-1]->getNeuron(k)->setBackpropError(sum);
 		}
 	}
