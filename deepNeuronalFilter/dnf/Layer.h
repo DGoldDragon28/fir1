@@ -19,6 +19,7 @@
 
 #include "Neuron.h"
 
+
 /**
  * This is the class for creating layers that are contained inside the Net class.
  * The Layer instances in turn contain neurons.

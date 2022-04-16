@@ -9,7 +9,7 @@
 int main(int argc, char ** argv) {
     std::string paths[2];
     int i, pathcnt = 0;
-    int ntaps = 100;
+    int ntaps = 500;
     double lrate = 0.0001;
     paths[1] = "/dev/stdin";
     std::string outpath;

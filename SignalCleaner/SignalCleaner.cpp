@@ -21,7 +21,7 @@ SignalCleaner::SignalCleaner(std::string noisey_signal_path, std::string noise_s
     }
     internal_fir = new Fir1(nr_taps);
     internal_fir->setLearningRate(learning_rate);
-    internal_dnf = new DNF(NLAYERS, nr_taps, (double)noisey_signal.getSampleRate(), Neuron::Act_Tanh);
+    internal_dnf = new DNF(NLAYERS, nr_taps, 1.0 * noisey_signal.getSampleRate(), Neuron::Act_Tanh);
 }
 
 void SignalCleaner::FilterFir1() {

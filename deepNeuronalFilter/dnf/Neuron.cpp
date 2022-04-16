@@ -59,7 +59,8 @@ void Neuron::initNeuron(int _neuronIndex, int _layerIndex, weightInitMethod _wim
 			weights[i] = ((( (double)rand() / RAND_MAX)) - 0.5) / (double)nInputs;
 			break;
 		}
-		initialWeights[i] = weights[i];
+        //printf("weight %f\n",weights[i]);
+        initialWeights[i] = weights[i];
 	}
 	weightSum = 0;
 	for (int i=0; i<nInputs; i++){
