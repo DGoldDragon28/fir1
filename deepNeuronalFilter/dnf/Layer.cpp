@@ -205,6 +205,18 @@ void Layer::saveWeights(){
         neurons[i]->saveWeights();
     }
 }
+void Layer::snapWeights(std::fstream& file) {
+    if(!file || !file){
+        return;
+    }
+    for (int i=0; i<nNeurons; i++){
+        for (int j=0; j<nInputs; j++){
+            file << neurons[i]->getWeights(j);
+        }
+        file << "\n";
+    }
+}
+
 
 void Layer::snapWeights(string prefix, string _trial, int _subject){
     subject = _subject;

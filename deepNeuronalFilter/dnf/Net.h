@@ -169,7 +169,9 @@ public:
  * this is overwritten every time the function is called
  */
 	void snapWeights(string prefix, string _trial, int _subject);
-	void snapWeightsMatrixFormat(string prefix);
+    void snapWeights(std::fstream& file);
+    
+    void snapWeightsMatrixFormat(string prefix);
 /**
  * Prints on the console a full tree of the network with the values of all weights and outputs for all neurons
  */

@@ -9,14 +9,14 @@
 int main(int argc, char ** argv) {
     std::string paths[2];
     int i, pathcnt = 0;
-    int ntaps = 5;
+    int ntaps = 100;
     double lrate = 0.0001;
     paths[1] = "/dev/stdin";
     std::string outpath;
     bool has_outpath = false;
     bool use_dnf = false;
     
-
+    
     for(i = 1; i < argc; i++) {
         if(argv[i][0] != '-') {
             if(pathcnt > 1) { PRINT_USAGE(argv[0]); return EXIT_FAILURE; }
@@ -55,7 +55,10 @@ int main(int argc, char ** argv) {
 
     SignalCleaner cleaner(paths[1], paths[0], ntaps, lrate);
     if(use_dnf){
+        cleaner.SetWeightDistanceFile("output_weight_distance.csv");
+        cleaner.SetRemoverFile("output_remover.csv");
         cleaner.FilterDnf();
+        cleaner.CloseFiles();
     }
     else{
         cleaner.FilterFir1();

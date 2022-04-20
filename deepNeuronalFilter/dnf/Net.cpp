@@ -171,7 +171,7 @@ Layer* Net::getLayer(int _layerIndex){
 
 double Net::getWeightDistance(){
 	double weightChange = 0 ;
-	double weightDistance =0;
+	double weightDistance = 0;
 	for (int i=0; i<nLayers; i++){
 		weightChange += layers[i]->getWeightChange();
 	}
@@ -208,6 +208,12 @@ void Net::snapWeights(string prefix, string _trial, int _subject){
 	for (int i=0; i<nLayers; i++){
 		layers[i]->snapWeights(prefix, _trial, _subject);
 	}
+}
+
+void Net::snapWeights(std::fstream& file){
+    for (int i=0; i<nLayers; i++){
+        layers[i]->snapWeights(file);
+    }
 }
 
 void Net::snapWeightsMatrixFormat(string prefix){

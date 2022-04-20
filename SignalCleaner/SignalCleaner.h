@@ -1,18 +1,13 @@
-//
-// Created by ross on 08/03/2022.
-//
-
 #ifndef FIR1_SIGNALCLEANER_H
 #define FIR1_SIGNALCLEANER_H
 #include <Fir1.h>
 #include "AudioFile/AudioFile.h"
 #include <cmath>
 #include <boost/circular_buffer.hpp>
-#include "../deepNeuronalFilter/dnf.h"
 #include <Iir.h>
 #include <Fir1.h>
-#include "../deepNeuronalFilter/dnf/Net.h"
-#include "../deepNeuronalFilter/dnf/Layer.h"
+#include "dnf.h"
+
 class SignalCleaner {
 public:
     AudioFile<double> noisey_signal;
@@ -29,11 +24,28 @@ public:
     void FilterDnf();
 
     void PrintSummaries();
+    
+    void SetWeightsFile(std::string filename);
+    
+    void SetWeightDistanceFile(std::string filename);
+    
+    void SetRemoverFile(std::string filename);
+    
+    void ExportDNFWeights();
+    
+    void ExportDNFWeightDistance();
+    
+    void ExportDNFRemover();
+    
+    void CloseFiles();
 
 
 private:
     Fir1* internal_fir = NULL;
     DNF* internal_dnf = NULL;
+    std::fstream weights_file;
+    std::fstream weight_distance_file;
+    std::fstream remover_file;
 
     bool FileExists(std::string filename);
 };

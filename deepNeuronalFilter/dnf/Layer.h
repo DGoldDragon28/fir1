@@ -169,6 +169,8 @@ public:
 	 * this is overwritten every time the function is called
 	 */
 	void snapWeights(string prefix, string _trial, int _subject);
+    
+    void snapWeights(fstream& file);
 	
 	void snapWeightsMatrixFormat(string prefix);
 	
