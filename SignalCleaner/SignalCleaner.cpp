@@ -4,7 +4,7 @@
 
 #define NLAYERS 6
 
-SignalCleaner::SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, double learning_rate){
+SignalCleaner::SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, double learning_rate, Neuron::actMethod actMeth){
     if(!FileExists(noisey_signal_path)){
         throw std::invalid_argument("Noisey signal file does not exist.");
     }
@@ -21,9 +21,13 @@ SignalCleaner::SignalCleaner(std::string noisey_signal_path, std::string noise_s
     }
     internal_fir = new Fir1(nr_taps);
     internal_fir->setLearningRate(learning_rate);
-    internal_dnf = new DNF(NLAYERS, nr_taps, 1.0 * noisey_signal.getSampleRate(), Neuron::Act_Tanh);
+    internal_dnf = new DNF(NLAYERS, nr_taps, 1.0 * noisey_signal.getSampleRate(), actMeth);
     //set equal weight learning rate, bias rate zero
     internal_dnf->getNet().setLearningRate(learning_rate, 0);
+}
+
+void SignalCleaner::SetGain(double _gain){
+    gain = _gain;
 }
 
 void SignalCleaner::FilterFir1() {

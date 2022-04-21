@@ -14,8 +14,8 @@ public:
     AudioFile<double> noise_source;
     AudioFile<double> output;
     AudioFile<double> clean;
-
-    SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, double learning_rate);
+    
+    SignalCleaner(std::string noisey_signal_path, std::string noise_source_path, unsigned nr_taps, double learning_rate, Neuron::actMethod actMeth=Neuron::Act_NONE);
 
     bool SaveFiltered(std::string);
 
@@ -38,9 +38,12 @@ public:
     void ExportDNFRemover();
     
     void CloseFiles();
+    
+    void SetGain(double _gain);
 
 
 private:
+    double gain = 1.0f;
     Fir1* internal_fir = NULL;
     DNF* internal_dnf = NULL;
     std::fstream weights_file;

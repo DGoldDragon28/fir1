@@ -4,7 +4,7 @@
 //#include <fenv.h>
 //feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
 
-#define PRINT_USAGE(n) (std::cerr << "Usage: " << n << "[-l <lrate>] [-n <ntaps>] [-o <file>] [-d | -f] <noise-source> [<input>]" << std::endl)
+#define PRINT_USAGE(n) (std::cerr << "Usage: " << n << "[-l <lrate>] [-n <ntaps>] [-o <file>] [-g <gain>] [-a <act>] [-d | -f] <noise-source> [<input>]" << std::endl)
 
 int main(int argc, char ** argv) {
     std::string paths[2];
@@ -15,7 +15,9 @@ int main(int argc, char ** argv) {
     std::string outpath;
     bool has_outpath = false;
     bool use_dnf = false;
-    
+    double gain = 1.0f;
+    Neuron::actMethod act = Neuron::Act_NONE;
+    int a;
     
     for(i = 1; i < argc; i++) {
         if(argv[i][0] != '-') {
@@ -31,6 +33,16 @@ int main(int argc, char ** argv) {
                 break;
             case 'n':
                 ntaps = std::stoi(argv[i][2] ? &argv[i][2] : argv[++i]);
+                break;
+            case 'g':
+                gain = std::stod(argv[i][2] ? &argv[i][2] : argv[++i]);
+                break;
+            case 'a':
+                a = std::stoi(argv[i][2] ? &argv[i][2] : argv[++i]);
+                if(a < 4 && a >= 0) {
+                    act = static_cast<Neuron::actMethod>(a);
+                }
+                else{ PRINT_USAGE(argv[0]); return EXIT_FAILURE; }
                 break;
             case 'o':
                 outpath = (argv[i][2] ? &argv[i][2] : argv[++i]);
@@ -52,12 +64,13 @@ int main(int argc, char ** argv) {
         PRINT_USAGE(argv[0]);
         return EXIT_FAILURE;
     }
-
-    SignalCleaner cleaner(paths[1], paths[0], ntaps, lrate);
+    
+    SignalCleaner cleaner(paths[1], paths[0], ntaps, lrate, act);
+    cleaner.SetGain(gain);
     if(use_dnf){
         cleaner.SetWeightDistanceFile("output_weight_distance.csv");
         cleaner.SetRemoverFile("output_remover.csv");
-        cleaner.FilterDnf();
+        //cleaner.FilterDnf();
         cleaner.CloseFiles();
     }
     else{
