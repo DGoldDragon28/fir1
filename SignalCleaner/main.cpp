@@ -70,7 +70,7 @@ int main(int argc, char ** argv) {
     if(use_dnf){
         cleaner.SetWeightDistanceFile("output_weight_distance.csv");
         cleaner.SetRemoverFile("output_remover.csv");
-        //cleaner.FilterDnf();
+        cleaner.FilterDnf();
         cleaner.CloseFiles();
     }
     else{
