@@ -24,7 +24,8 @@ do
         while [ "$(bc <<< "$gain > $zero")" == "1"  ];
         do
           echo "Input gain: $gain"
-          ./SignalCleaner/signal-cleaner $flags -o "$cleandir/$sig-$noise-$gain.wav" "-g" $gain "-a" $act "-d" "$noisedir/$noise.wav" "$dirtydir/$sig-$noise.wav"
+          ./SignalCleaner/signal-cleaner $flags -o "$cleandir/$sig-$noise-$act-$gain.wav" "-g" $gain "-a" $act "-d" "$noisedir/$noise.wav" "$dirtydir/$sig-$noise.wav"
+       		./correlate/wav-correlate "$sigdir/$sig.wav" "$cleandir/$sig-$noise-$act-$gain.wav" "$outputcsv" "$act,$gain"
           gain=$(awk "BEGIN{ print $gain - $gain_step }")
         done
         act=$[$act+1]
